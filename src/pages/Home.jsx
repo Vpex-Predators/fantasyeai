@@ -17,6 +17,7 @@ import LeaguePulseCard from "@/components/fantasy/home/LeaguePulseCard";
 import AnalystDoorwayCard from "@/components/fantasy/home/AnalystDoorwayCard";
 import AiAnalystPanel from "@/components/fantasy/home/AiAnalystPanel";
 import { PlayerNameProvider } from "@/components/PlayerNameProvider";
+import { localDateString } from "@/lib/localDate";
 
 function LockedSkeleton() {
   return (
@@ -50,7 +51,7 @@ export default function Home() {
     (async () => {
       setLoading(true);
       try {
-        const res = await base44.functions.invoke("getDashboardData", {});
+        const res = await base44.functions.invoke("getDashboardData", { localDate: localDateString() });
         if (!cancelled) {
           setData(res.data);
           setError(null);

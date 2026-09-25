@@ -22,6 +22,7 @@ import PlayoffRunway from "@/components/fantasy/dashboard/PlayoffRunway";
 import LeaguePulse from "@/components/fantasy/dashboard/LeaguePulse";
 import AdminPanel from "@/components/fantasy/dashboard/AdminPanel";
 import { PlayerNameProvider } from "@/components/PlayerNameProvider";
+import { localDateString } from "@/lib/localDate";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -37,7 +38,7 @@ export default function Dashboard() {
   });
   const hasTrackedView = useRef(false);
   const loadBoard = useCallback(async () => {
-    const res = await base44.functions.invoke("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
+    const res = await base44.functions.invoke("getDashboardData", { localDate: localDateString() });
     setData(res.data);
     if (res.data && !hasTrackedView.current) {
       hasTrackedView.current = true;
@@ -102,7 +103,7 @@ export default function Dashboard() {
   const lightRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const res = await base44.functions.invoke("getLiveScores", { localDate: new Date().toLocaleDateString("en-CA") });
+      const res = await base44.functions.invoke("getLiveScores", { localDate: localDateString() });
       const live = res.data;
       const mine = new Map((live.mine || []).map(p => [p.id, p]));
       const opp = new Map((live.opponent || []).map(p => [p.id, p]));

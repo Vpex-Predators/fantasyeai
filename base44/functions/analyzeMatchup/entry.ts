@@ -3,6 +3,7 @@ import {
   DEFAULT_LEAGUE_ID, fetchLeagueCurrent,
   parseTeamSummary, parseRosterPlayer, PLAYBOOK_MODEL, round1
 } from '../../shared/espnLeague.js';
+import { matchupOpponentId } from '../../shared/matchup.js';
 
 export default async function(req) {
   try {
@@ -25,8 +26,8 @@ export default async function(req) {
       m.matchupPeriodId === currentPeriod &&
       (String((m.home || {}).teamId) === myId || String((m.away || {}).teamId) === myId)
     );
-    if (!currentMatchup) return Response.json({ error: 'No matchup found for this week (possibly a bye).' }, { status: 400 });
-    const oppId = String(currentMatchup.home.teamId) === myId ? String(currentMatchup.away.teamId) : String(currentMatchup.home.teamId);
+    const oppId = currentMatchup ? matchupOpponentId(currentMatchup, myId) : null;
+    if (!oppId) return Response.json({ error: 'No matchup found for this week (possibly a bye).' }, { status: 400 });
     const myRaw = rawTeams.find(t => String(t.id) === myId);
     const oppRaw = rawTeams.find(t => String(t.id) === oppId);
     if (!myRaw || !oppRaw) return Response.json({ error: 'Could not load both teams from ESPN.' }, { status: 400 });

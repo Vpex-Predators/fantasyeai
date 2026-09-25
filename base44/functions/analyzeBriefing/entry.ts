@@ -4,6 +4,7 @@ import {
   parseTeamSummary, parseTeamRoster, leaguePeriods
 } from '../../shared/espnLeague.js';
 import { computePlayoffOdds } from '../../shared/playoffOdds.js';
+import { matchupOpponentId } from '../../shared/matchup.js';
 
 const ALLOWED_MODELS = ['automatic', 'gemini_3_flash', 'gemini_3_1_pro', 'gpt_5_mini', 'gpt_5_4', 'gpt_5_6_sol', 'gpt_5_6_luna', 'claude-sonnet-5', 'claude_opus_5', 'claude_opus_4_8'];
 const WEB_MODELS = new Set(['automatic', 'gemini_3_flash', 'gemini_3_1_pro']);
@@ -48,8 +49,8 @@ export default async function(req) {
       (String((m.home || {}).teamId) === myId || String((m.away || {}).teamId) === myId)
     );
     let opponentLines = 'No opponent scheduled yet.';
-    if (currentMatchup) {
-      const oppId = String(currentMatchup.home.teamId) === myId ? String(currentMatchup.away.teamId) : String(currentMatchup.home.teamId);
+    const oppId = currentMatchup ? matchupOpponentId(currentMatchup, myId) : null;
+    if (oppId) {
       const oppRaw = rawTeams.find(t => String(t.id) === oppId);
       const oppSummary = teams.find(t => t.id === oppId);
       if (oppRaw && oppSummary) {

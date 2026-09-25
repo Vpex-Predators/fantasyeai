@@ -3,6 +3,7 @@ import {
   DEFAULT_LEAGUE_ID, fetchLeagueCurrent, parseTeamRoster, parseTeamSummary, leaguePeriods
 } from '../../shared/espnLeague.js';
 import { computePlayoffOdds } from '../../shared/playoffOdds.js';
+import { matchupOpponentId } from '../../shared/matchup.js';
 import { localDayFromRequest } from '../../shared/simDay.js';
 
 // Manual refresh button: live scores plus a fresh 1,000-run playoff
@@ -40,10 +41,8 @@ export default async function(req) {
     );
     let opponent = [];
     if (currentMatchup) {
-      const oppId = String(currentMatchup.home.teamId) === String(lock.team_id)
-        ? String(currentMatchup.away.teamId)
-        : String(currentMatchup.home.teamId);
-      const oppRaw = rawTeams.find(t => String(t.id) === oppId);
+      const oppId = matchupOpponentId(currentMatchup, lock.team_id);
+      const oppRaw = oppId ? rawTeams.find(t => String(t.id) === oppId) : null;
       if (oppRaw) opponent = parseTeamRoster(oppRaw, currentPeriod).map(trim);
     }
 

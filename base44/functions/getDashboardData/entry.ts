@@ -4,6 +4,7 @@ import {
   parseTeamSummary, parseTeamRoster, leaguePeriods, round1
 } from '../../shared/espnLeague.js';
 import { computePlayoffOdds } from '../../shared/playoffOdds.js';
+import { isHeadToHead, matchupOpponentId } from '../../shared/matchup.js';
 import { localDayFromRequest } from '../../shared/simDay.js';
 import { buildLeaguePulse } from '../../shared/leaguePulse.js';
 
@@ -65,8 +66,9 @@ export default async function(req) {
     // Season scoring trend from the schedule
     const scoringTrend = [];
     for (const m of schedule) {
-      const home = m.home || {};
-      const away = m.away || {};
+      if (!isHeadToHead(m)) continue;
+      const home = m.home;
+      const away = m.away;
       if (String(home.teamId) === mySummary.id) scoringTrend.push({ week: m.matchupPeriodId, points: round1(home.totalPoints) });
       else if (String(away.teamId) === mySummary.id) scoringTrend.push({ week: m.matchupPeriodId, points: round1(away.totalPoints) });
     }
@@ -75,8 +77,8 @@ export default async function(req) {
     // Per-team weekly points (completed weeks only) — powers the opponent overlay
     const weeklyScores = {};
     for (const m of schedule) {
-      if (m.matchupPeriodId >= currentPeriod) continue;
-      for (const side of [m.home || {}, m.away || {}]) {
+      if (m.matchupPeriodId >= currentPeriod || !isHeadToHead(m)) continue;
+      for (const side of [m.home, m.away]) {
         if (side.teamId == null) continue;
         const id = String(side.teamId);
         if (!weeklyScores[id]) weeklyScores[id] = [];
@@ -87,9 +89,9 @@ export default async function(req) {
     // My week-by-week head-to-head results (completed weeks only)
     const headToHead = [];
     for (const m of schedule) {
-      if (m.matchupPeriodId >= currentPeriod) continue;
-      const home = m.home || {};
-      const away = m.away || {};
+      if (m.matchupPeriodId >= currentPeriod || !isHeadToHead(m)) continue;
+      const home = m.home;
+      const away = m.away;
       let mine = null, opp = null, oppId = null;
       if (String(home.teamId) === mySummary.id) { mine = round1(home.totalPoints); opp = round1(away.totalPoints); oppId = String(away.teamId); }
       else if (String(away.teamId) === mySummary.id) { mine = round1(away.totalPoints); opp = round1(home.totalPoints); oppId = String(home.teamId); }
@@ -108,8 +110,8 @@ export default async function(req) {
     let opponentStarters = [];
     let opponentBench = [];
     if (currentMatchup) {
-      const oppId = String(currentMatchup.home.teamId) === mySummary.id ? String(currentMatchup.away.teamId) : String(currentMatchup.home.teamId);
-      const oppRaw = rawTeams.find(t => String(t.id) === oppId);
+      const oppId = matchupOpponentId(currentMatchup, mySummary.id);
+      const oppRaw = oppId ? rawTeams.find(t => String(t.id) === oppId) : null;
       const oppSummary = teams.find(t => t.id === oppId);
       if (oppRaw && oppSummary) {
         opponent = {

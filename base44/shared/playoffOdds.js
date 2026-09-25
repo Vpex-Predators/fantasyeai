@@ -3,6 +3,8 @@
 // Powers getDashboardData, analyzeBriefing, the War Room threat board and the
 // trade impact simulator.
 
+import { isHeadToHead, sideTeamId } from './matchup.js';
+
 function normalCdf(x) {
   // Abramowitz & Stegun 7.1.26 error-function approximation.
   const t = 1 / (1 + 0.2316419 * Math.abs(x));
@@ -48,9 +50,11 @@ export function buildProfiles({ teams, schedule, currentPeriod, gamesPlayed }) {
   const allScores = [];
   for (const m of schedule || []) {
     if (m.matchupPeriodId >= currentPeriod) continue;
-    for (const side of [m.home || {}, m.away || {}]) {
-      if (side.teamId == null) continue;
-      const id = String(side.teamId);
+    // A bye is a one-sided schedule entry. Counting the lone side records a
+    // 0 and drags that team's scoring mean (and everyone's playoff odds).
+    if (!isHeadToHead(m)) continue;
+    for (const side of [m.home, m.away]) {
+      const id = sideTeamId(side);
       if (!(id in teamById)) continue;
       const pts = Number(side.totalPoints) || 0;
       teamById[id].games.push(pts);

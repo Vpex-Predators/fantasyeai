@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { rmSync } from 'node:fs'
 import { readdir, readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
@@ -49,6 +50,9 @@ function runBuild() {
     })
   })
 }
+
+rmSync(path.join(root, 'node_modules', '.vite'), { recursive: true, force: true })
+rmSync(dist, { recursive: true, force: true })
 
 const started = performance.now()
 const build = await runBuild()

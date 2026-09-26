@@ -3,6 +3,7 @@ import {
   DEFAULT_LEAGUE_ID, fetchLeagueCurrent, fetchFreeAgents,
   parseTeamRoster, leaguePeriods
 } from '../../shared/espnLeague.js';
+import { hasPositionalBackup, rosterPosition } from '../../shared/lineupNeeds.js';
 
 const INJURY_LABELS = { QUESTIONABLE: 'questionable', OUT: 'out', INJURY_RESERVE: 'on IR', SUSPENSION: 'suspended' };
 
@@ -29,7 +30,7 @@ export default async function(req) {
     // Per-week cache: serve last week's-in-progress scan instantly; only a new
     // week or an explicit re-scan triggers a fresh (AI) wire scan.
     const cache = state && state.waiver_cache ? state.waiver_cache : null;
-    if (!force && cache && cache.week === currentPeriod && cache.rulesVersion === 2 && Array.isArray(cache.targets)) {
+    if (!force && cache && cache.week === currentPeriod && cache.rulesVersion === 3 && Array.isArray(cache.targets)) {
       const cachedTargets = cache.targets.map(target => {
         const isHigh = target.priority === 'high';
         const canRecommendDrop = isHigh && ['overlooked', 'fills_weak_spot'].includes(target.category);
@@ -62,13 +63,14 @@ export default async function(req) {
     const weaknesses = [];
     for (const s of starters) {
       const inj = INJURY_LABELS[s.injuryStatus];
+      const pos = rosterPosition(s);
       if (inj) {
-        weaknesses.push(`${s.name} (${s.position}) is ${inj} this week, projected ${s.weeklyProj} pts`);
-        if (!benchPlayers.some(b => b.position === s.position)) {
-          weaknesses.push(`There is no backup ${s.position} on the bench if ${s.name} sits`);
+        weaknesses.push(`${s.name} (${pos}) is ${inj} this week, projected ${s.weeklyProj} pts`);
+        if (!hasPositionalBackup(s, benchPlayers)) {
+          weaknesses.push(`There is no backup ${pos} on the bench if ${s.name} sits`);
         }
       } else if (s.weeklyProj <= 4 && s.seasonAvg <= 4) {
-        weaknesses.push(`${s.name} (${s.position}) is a weak starter — projected just ${s.weeklyProj} pts this week (season avg ${s.seasonAvg})`);
+        weaknesses.push(`${s.name} (${pos}) is a weak starter — projected just ${s.weeklyProj} pts this week (season avg ${s.seasonAvg})`);
       }
     }
     if (!weaknesses.length) weaknesses.push('No obvious holes — starters are healthy and producing');
@@ -81,8 +83,8 @@ export default async function(req) {
       .map(p => `${p.name} (${p.position}) — proj ${p.weeklyProj} pts this week, ${p.seasonProj} rest of season, owned in ${p.percentOwned}% of leagues${INJURY_LABELS[p.injuryStatus] ? `, ${INJURY_LABELS[p.injuryStatus]}` : ''}`)
       .join('\n');
 
-    const rosterText = starters.map(s => `${s.name} (${s.position}) — proj ${s.weeklyProj} pts${INJURY_LABELS[s.injuryStatus] ? `, ${INJURY_LABELS[s.injuryStatus]}` : ''}`).join('\n');
-    const benchText = benchPlayers.map(b => `${b.name} (${b.position}) — proj ${b.weeklyProj} pts, season avg ${b.seasonAvg}`).join('\n') || 'Empty bench';
+    const rosterText = starters.map(s => `${s.name} (${rosterPosition(s)}) — proj ${s.weeklyProj} pts${INJURY_LABELS[s.injuryStatus] ? `, ${INJURY_LABELS[s.injuryStatus]}` : ''}`).join('\n');
+    const benchText = benchPlayers.map(b => `${b.name} (${rosterPosition(b)}) — proj ${b.weeklyProj} pts, season avg ${b.seasonAvg}`).join('\n') || 'Empty bench';
 
     const prompt = `You are the waiver-wire scout for a fantasy football team. It is week ${currentPeriod} of the NFL season (year ${season}).
 
@@ -165,7 +167,7 @@ Return JSON matching the schema.`;
     }) : [];
 
     // Save the scan for the rest of the week (best effort — never block the result).
-    const waiverCache = { week: currentPeriod, rulesVersion: 2, weaknesses, targets, scanned_at: new Date().toISOString() };
+    const waiverCache = { week: currentPeriod, rulesVersion: 3, weaknesses, targets, scanned_at: new Date().toISOString() };
     try {
       if (state) await base44.asServiceRole.entities.RefreshState.update(state.id, { waiver_cache: waiverCache });
       else await base44.asServiceRole.entities.RefreshState.create({ user_id: user.id, league_id: DEFAULT_LEAGUE_ID, waiver_cache: waiverCache });

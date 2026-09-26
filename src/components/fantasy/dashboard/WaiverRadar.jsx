@@ -5,6 +5,7 @@ import GlossaryChip from "@/components/hud/GlossaryChip";
 import WireList from "@/components/waiver/WireList";
 import WaiverPlayerNumbers from "@/components/waiver/WaiverPlayerNumbers";
 import { buildShortNames, shortName } from "@/lib/playerNames";
+import { hasPositionalBackup, rosterPosition } from "../../../../base44/shared/lineupNeeds.js";
 
 const CATEGORY_STYLES = {
   fills_weak_spot: { label: "Fills a hole", cls: "border-amber-400/30 bg-amber-400/15 text-amber-300" },
@@ -33,10 +34,9 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
 
   // Quick live flags from the lineup: injured starters without a backup.
   const lineFlags = useMemo(() => {
-    const benchPos = new Set((bench || []).map(b => b.position));
     return (starters || [])
-      .filter(s => INJURY_LABELS[s.injuryStatus] && !benchPos.has(s.position))
-      .map(s => `${shortName(s.name)} is ${INJURY_LABELS[s.injuryStatus]} and you have no backup ${s.position}`);
+      .filter(s => INJURY_LABELS[s.injuryStatus] && !hasPositionalBackup(s, bench))
+      .map(s => `${shortName(s.name)} is ${INJURY_LABELS[s.injuryStatus]} and you have no backup ${rosterPosition(s)}`);
   }, [starters, bench]);
 
   // force=true runs a fresh scan; force=false serves this week's cached scan instantly.

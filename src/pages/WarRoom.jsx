@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import AppNavBar from "@/components/AppNavBar";
 import HudStatusBar from "@/components/hud/HudStatusBar";
 import HudPanel from "@/components/hud/HudPanel";

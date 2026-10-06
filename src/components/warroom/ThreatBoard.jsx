@@ -34,7 +34,7 @@ export default function ThreatBoard({ board }) {
             />
           </div>
           <div className="mt-3 space-y-1.5">
-            {keepAhead.progression.map((p) => (
+            {(keepAhead.progression || []).map((p) => (
               <div key={p.wins} className="flex items-center gap-2">
                 <span className="w-9 shrink-0 font-mono text-[10px] text-white/50">+{p.wins}W</span>
                 <div className="h-1.5 flex-1 bg-white/10">

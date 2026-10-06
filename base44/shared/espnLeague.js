@@ -74,6 +74,21 @@ export async function fetchLeagueCurrent(views, leagueId = DEFAULT_LEAGUE_ID) {
 export const SLOT_LABELS = { 0: 'QB', 2: 'RB', 3: 'RB/WR', 4: 'WR', 5: 'WR/TE', 6: 'TE', 7: 'OP', 16: 'DST', 17: 'K', 20: 'BE', 21: 'IR', 23: 'FLEX' };
 export const BENCH_SLOTS = [20, 21];
 export const POSITION_BY_ID = { 1: 'QB', 2: 'RB', 3: 'WR', 4: 'TE', 5: 'K', 16: 'D/ST' };
+const SLOT_ONLY_LABELS = new Set(['BE', 'IR', 'FLEX', 'FLX', 'OP', 'RB/WR', 'WR/TE']);
+export const INJURY_LABELS = {
+  QUESTIONABLE: 'questionable', Q: 'questionable',
+  OUT: 'out', O: 'out',
+  DOUBTFUL: 'doubtful', D: 'doubtful',
+  INJURY_RESERVE: 'on IR', IR: 'on IR', PUP: 'on IR', NFI: 'on IR',
+  SUSPENSION: 'suspended', SSPD: 'suspended', SSD: 'suspended'
+};
+
+// ESPN slot labels (BE / FLEX / OP) are not real positions — use defaultPosition.
+export function realPos(p) {
+  const raw = (p && p.realPosition) || (p && !SLOT_ONLY_LABELS.has(p.position) ? p.position : '') || '';
+  const key = String(raw).toUpperCase().replace('/', '');
+  return key === 'DST' || key === 'D ST' ? 'DST' : key;
+}
 
 export function round1(value) {
   return Math.round((Number(value) || 0) * 10) / 10;

@@ -7,8 +7,9 @@ export default async function(req) {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const body = await req.json();
-    const keys = Array.isArray(body.keys) ? body.keys.slice(0, 50).map(k => String(k)) : [];
+    const body = await req.json().catch(() => ({}));
+    const raw = body && body.keys;
+    const keys = (Array.isArray(raw) ? raw : raw != null ? [raw] : []).slice(0, 50).map(k => String(k)).filter(Boolean);
     if (keys.length === 0) return Response.json({ error: 'No update keys provided.' }, { status: 400 });
 
     const states = await base44.asServiceRole.entities.RefreshState.filter({ user_id: user.id, league_id: DEFAULT_LEAGUE_ID });

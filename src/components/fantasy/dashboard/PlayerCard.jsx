@@ -18,7 +18,7 @@ export default function PlayerCard({ player, pending, analyzing, onOpen, onAnaly
   const a = player.analysis;
 
   const toggle = () => {
-    if (!open && pending) onOpen("p:" + player.id);
+    if (!open && pending) onOpen(["p:" + player.id]);
     setOpen(!open);
   };
 

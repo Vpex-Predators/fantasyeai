@@ -92,12 +92,17 @@ export const AuthProvider = ({ children }) => {
       setIsAuthenticated(false);
       setAuthChecked(true);
       
-      // If user auth fails, it might be an expired token
+      // Expired / invalid stored token: drop it and stay on public routes
+      // (in-app login, OAuth consent). A fatal authError would unmount those
+      // pages before they can recover.
       if (error.status === 401 || error.status === 403) {
-        setAuthError({
-          type: 'auth_required',
-          message: 'Authentication required'
-        });
+        try {
+          if (typeof window !== "undefined") {
+            window.localStorage.removeItem("base44_access_token");
+            window.localStorage.removeItem("token");
+          }
+        } catch (e) { /* storage unavailable */ }
+        setUser(null);
       }
     }
   };

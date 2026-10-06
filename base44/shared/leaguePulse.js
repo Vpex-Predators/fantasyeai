@@ -29,7 +29,7 @@ export async function buildLeaguePulse({ league, teams, season, leagueId, curren
   const txs = seasonTxs
     .filter(t => (t.items || []).length && t.status !== 'CANCELED' && t.status !== 'FAILED_INVALIDPLAYERSOURCE')
     .sort((a, b) => (b.proposedDate || 0) - (a.proposedDate || 0));
-  if (!txs.length) return { totals, moves: [], movesAvailable: false, flags: [] };
+  if (!txs.length) return { totals, moves: [], movesAvailable: false, flags: [], counts: { adds: 0, drops: 0, trades: 0, total: 0, weeks: currentPeriod } };
 
   // Season-wide counts (the move log itself is capped for display).
   const counts = { adds: 0, drops: 0, trades: 0, total: txs.length, weeks: currentPeriod };

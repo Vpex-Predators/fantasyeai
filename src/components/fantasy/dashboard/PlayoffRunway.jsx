@@ -57,7 +57,7 @@ export default function PlayoffRunway({ playoffOdds }) {
 
       {view === "sim" ? (
         <div className="mt-3 space-y-1.5">
-          {race.map((t, i) => (
+          {(race || []).map((t, i) => (
             <React.Fragment key={t.id}>
               <div
                 className={`flex items-center gap-2 rounded-xl border px-2.5 py-2 ${

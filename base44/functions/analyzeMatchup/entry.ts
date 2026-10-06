@@ -26,7 +26,10 @@ export default async function(req) {
       (String((m.home || {}).teamId) === myId || String((m.away || {}).teamId) === myId)
     );
     if (!currentMatchup) return Response.json({ error: 'No matchup found for this week (possibly a bye).' }, { status: 400 });
-    const oppId = String(currentMatchup.home.teamId) === myId ? String(currentMatchup.away.teamId) : String(currentMatchup.home.teamId);
+    const homeId = String((currentMatchup.home || {}).teamId ?? '');
+    const awayId = String((currentMatchup.away || {}).teamId ?? '');
+    const oppId = homeId === myId ? awayId : homeId;
+    if (!homeId || !awayId || !oppId) return Response.json({ error: 'No matchup found for this week (possibly a bye).' }, { status: 400 });
     const myRaw = rawTeams.find(t => String(t.id) === myId);
     const oppRaw = rawTeams.find(t => String(t.id) === oppId);
     if (!myRaw || !oppRaw) return Response.json({ error: 'Could not load both teams from ESPN.' }, { status: 400 });

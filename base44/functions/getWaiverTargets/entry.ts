@@ -1,10 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
 import {
   DEFAULT_LEAGUE_ID, fetchLeagueCurrent, fetchFreeAgents,
-  parseTeamRoster, leaguePeriods
+  parseTeamRoster, leaguePeriods, INJURY_LABELS, realPos
 } from '../../shared/espnLeague.js';
-
-const INJURY_LABELS = { QUESTIONABLE: 'questionable', OUT: 'out', INJURY_RESERVE: 'on IR', SUSPENSION: 'suspended' };
 
 export default async function(req) {
   try {
@@ -29,7 +27,7 @@ export default async function(req) {
     // Per-week cache: serve last week's-in-progress scan instantly; only a new
     // week or an explicit re-scan triggers a fresh (AI) wire scan.
     const cache = state && state.waiver_cache ? state.waiver_cache : null;
-    if (!force && cache && cache.week === currentPeriod && cache.rulesVersion === 2 && Array.isArray(cache.targets)) {
+    if (!force && cache && cache.week === currentPeriod && cache.rulesVersion === 3 && Array.isArray(cache.targets)) {
       const cachedTargets = cache.targets.map(target => {
         const isHigh = target.priority === 'high';
         const canRecommendDrop = isHigh && ['overlooked', 'fills_weak_spot'].includes(target.category);
@@ -61,11 +59,12 @@ export default async function(req) {
     // Positional weaknesses, stated in plain English for the analyst prompt.
     const weaknesses = [];
     for (const s of starters) {
-      const inj = INJURY_LABELS[s.injuryStatus];
+      const inj = INJURY_LABELS[String(s.injuryStatus || '').toUpperCase()];
+      const starterPos = realPos(s) || s.position;
       if (inj) {
-        weaknesses.push(`${s.name} (${s.position}) is ${inj} this week, projected ${s.weeklyProj} pts`);
-        if (!benchPlayers.some(b => b.position === s.position)) {
-          weaknesses.push(`There is no backup ${s.position} on the bench if ${s.name} sits`);
+        weaknesses.push(`${s.name} (${starterPos}) is ${inj} this week, projected ${s.weeklyProj} pts`);
+        if (!benchPlayers.some(b => realPos(b) && realPos(b) === realPos(s))) {
+          weaknesses.push(`There is no backup ${starterPos} on the bench if ${s.name} sits`);
         }
       } else if (s.weeklyProj <= 4 && s.seasonAvg <= 4) {
         weaknesses.push(`${s.name} (${s.position}) is a weak starter — projected just ${s.weeklyProj} pts this week (season avg ${s.seasonAvg})`);
@@ -78,10 +77,10 @@ export default async function(req) {
     const byWeekly = pool.slice().sort((a, b) => (b.weeklyProj - a.weeklyProj) || (b.seasonProj - a.seasonProj)).slice(0, 60);
     const bySeason = pool.slice().sort((a, b) => b.seasonProj - a.seasonProj).slice(0, 20);
     const wire = Array.from(new Map([...byWeekly, ...bySeason].map(p => [p.id, p])).values())
-      .map(p => `${p.name} (${p.position}) — proj ${p.weeklyProj} pts this week, ${p.seasonProj} rest of season, owned in ${p.percentOwned}% of leagues${INJURY_LABELS[p.injuryStatus] ? `, ${INJURY_LABELS[p.injuryStatus]}` : ''}`)
+      .map(p => `${p.name} (${p.position}) — proj ${p.weeklyProj} pts this week, ${p.seasonProj} rest of season, owned in ${p.percentOwned}% of leagues${INJURY_LABELS[String(p.injuryStatus || '').toUpperCase()] ? `, ${INJURY_LABELS[String(p.injuryStatus || '').toUpperCase()]}` : ''}`)
       .join('\n');
 
-    const rosterText = starters.map(s => `${s.name} (${s.position}) — proj ${s.weeklyProj} pts${INJURY_LABELS[s.injuryStatus] ? `, ${INJURY_LABELS[s.injuryStatus]}` : ''}`).join('\n');
+    const rosterText = starters.map(s => `${s.name} (${s.position}) — proj ${s.weeklyProj} pts${INJURY_LABELS[String(s.injuryStatus || '').toUpperCase()] ? `, ${INJURY_LABELS[String(s.injuryStatus || '').toUpperCase()]}` : ''}`).join('\n');
     const benchText = benchPlayers.map(b => `${b.name} (${b.position}) — proj ${b.weeklyProj} pts, season avg ${b.seasonAvg}`).join('\n') || 'Empty bench';
 
     const prompt = `You are the waiver-wire scout for a fantasy football team. It is week ${currentPeriod} of the NFL season (year ${season}).
@@ -165,7 +164,7 @@ Return JSON matching the schema.`;
     }) : [];
 
     // Save the scan for the rest of the week (best effort — never block the result).
-    const waiverCache = { week: currentPeriod, rulesVersion: 2, weaknesses, targets, scanned_at: new Date().toISOString() };
+    const waiverCache = { week: currentPeriod, rulesVersion: 3, weaknesses, targets, scanned_at: new Date().toISOString() };
     try {
       if (state) await base44.asServiceRole.entities.RefreshState.update(state.id, { waiver_cache: waiverCache });
       else await base44.asServiceRole.entities.RefreshState.create({ user_id: user.id, league_id: DEFAULT_LEAGUE_ID, waiver_cache: waiverCache });

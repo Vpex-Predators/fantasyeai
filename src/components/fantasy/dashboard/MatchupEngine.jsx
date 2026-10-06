@@ -6,7 +6,7 @@ import StartSitAdvisor from "./StartSitAdvisor";
 import HudPanel from "@/components/hud/HudPanel";
 import { usePlayerNames } from "@/components/PlayerNameProvider";
 
-const ROW_ORDER = ["QB", "RB1", "RB2", "WR1", "WR2", "TE", "FLX", "D/ST", "K"];
+const ROW_ORDER = ["QB", "RB1", "RB2", "WR1", "WR2", "TE", "FLX1", "FLX2", "OP1", "D/ST", "K"];
 
 function matchupRows(mine, theirs) {
   const mineBy = Object.fromEntries(sortStarters(mine).map(p => [p.lineupLabel, p]));
@@ -38,10 +38,13 @@ function PointsCell({ p, className }) {
 function PlayerRow({ mine, theirs, label }) {
   const short = usePlayerNames();
   const both = mine && theirs;
-  const mineWins = both && effectivePoints(mine) >= effectivePoints(theirs);
+  const minePts = effectivePoints(mine);
+  const theirsPts = effectivePoints(theirs);
+  const mineWins = both && minePts > theirsPts;
+  const theirsWins = both && theirsPts > minePts;
   return (
     <div className="flex items-center gap-1 text-[11px]">
-      <PointsCell p={mine} className={`w-8 shrink-0 font-mono text-left ${both && mineWins ? "font-semibold text-emerald-300" : "text-white/60"}`} />
+      <PointsCell p={mine} className={`w-8 shrink-0 font-mono text-left ${mineWins ? "font-semibold text-emerald-300" : "text-white/60"}`} />
       <span className="flex min-w-0 flex-1 items-center gap-1">
         <span className="truncate text-white/75">{mine ? short(mine.name) : "—"}</span>
         {mine && <InjuryBadge status={mine.injuryStatus} />}
@@ -51,7 +54,7 @@ function PlayerRow({ mine, theirs, label }) {
         {theirs && <InjuryBadge status={theirs.injuryStatus} />}
         <span className="truncate text-white/45">{theirs ? short(theirs.name) : "—"}</span>
       </span>
-      <PointsCell p={theirs} className={`w-8 shrink-0 font-mono text-right ${both && !mineWins ? "font-semibold text-rose-300" : "text-white/60"}`} />
+      <PointsCell p={theirs} className={`w-8 shrink-0 font-mono text-right ${theirsWins ? "font-semibold text-rose-300" : "text-white/60"}`} />
     </div>
   );
 }

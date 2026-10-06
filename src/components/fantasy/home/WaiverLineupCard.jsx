@@ -6,6 +6,7 @@ import HudPanel from "@/components/hud/HudPanel";
 import OpenButton from "@/components/hud/OpenButton";
 import DrawBar from "@/components/hud/DrawBar";
 import { buildShortNames, shortName } from "@/lib/playerNames";
+import { realPos } from "@/lib/lineupOrder";
 
 const PRIORITY_CHIP = {
   high: "border-emerald-400/40 bg-emerald-400/10 text-emerald-300",
@@ -18,7 +19,7 @@ function lineupEdge(myTeam) {
   let best = null;
   for (const s of myTeam.starters || []) {
     for (const b of myTeam.bench || []) {
-      if ((s.realPosition || "") !== (b.realPosition || "")) continue;
+      if (!realPos(s) || realPos(s) !== realPos(b)) continue;
       const margin = (b.weeklyProj || 0) - (s.weeklyProj || 0);
       if (margin > 0 && (!best || margin > best.margin)) best = { starter: s, bench: b, margin };
     }

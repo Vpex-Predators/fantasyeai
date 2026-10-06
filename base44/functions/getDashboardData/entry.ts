@@ -62,9 +62,11 @@ export default async function(req) {
     const myRaw = rawTeams.find(t => String(t.id) === String(lock.team_id));
     const roster = parseTeamRoster(myRaw, currentPeriod);
 
-    // Season scoring trend from the schedule
+    // Season scoring trend from the schedule (completed weeks only — future
+    // matchups would otherwise show as 0 and flatten the chart).
     const scoringTrend = [];
     for (const m of schedule) {
+      if (m.matchupPeriodId >= currentPeriod) continue;
       const home = m.home || {};
       const away = m.away || {};
       if (String(home.teamId) === mySummary.id) scoringTrend.push({ week: m.matchupPeriodId, points: round1(home.totalPoints) });
@@ -108,7 +110,9 @@ export default async function(req) {
     let opponentStarters = [];
     let opponentBench = [];
     if (currentMatchup) {
-      const oppId = String(currentMatchup.home.teamId) === mySummary.id ? String(currentMatchup.away.teamId) : String(currentMatchup.home.teamId);
+      const homeId = String((currentMatchup.home || {}).teamId ?? '');
+      const awayId = String((currentMatchup.away || {}).teamId ?? '');
+      const oppId = homeId === mySummary.id ? awayId : homeId;
       const oppRaw = rawTeams.find(t => String(t.id) === oppId);
       const oppSummary = teams.find(t => t.id === oppId);
       if (oppRaw && oppSummary) {

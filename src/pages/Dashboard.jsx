@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [analyzingPlayerId, setAnalyzingPlayerId] = useState(null);
   const [error, setError] = useState(null);
   const [tab, setTab] = useState(() => {
     const t = new URLSearchParams(window.location.search).get("tab");
@@ -62,7 +63,7 @@ export default function Dashboard() {
   }, [loadBoard]);
 
   const analyzeOne = async player => {
-    setAnalyzing(true);
+    setAnalyzingPlayerId(player.id);
     try {
       await base44.functions.invoke("analyzePlayers", {
         players: [{
@@ -81,7 +82,7 @@ export default function Dashboard() {
     } catch (err) {
       setError(err.response?.data?.error || err.message);
     } finally {
-      setAnalyzing(false);
+      setAnalyzingPlayerId(null);
     }
   };
 
@@ -139,9 +140,10 @@ export default function Dashboard() {
 
   // Highlights stay until the user actually opens that card.
   const markSeen = useCallback(keys => {
-    if (!keys || !keys.length) return;
-    setData(prev => (prev ? { ...prev, pending: (prev.pending || []).filter(k => !keys.includes(k)) } : prev));
-    base44.functions.invoke("markUpdatesSeen", { keys }).catch(() => {});
+    const list = (Array.isArray(keys) ? keys : keys != null ? [keys] : []).map(k => String(k)).filter(Boolean);
+    if (!list.length) return;
+    setData(prev => (prev ? { ...prev, pending: (prev.pending || []).filter(k => !list.includes(k)) } : prev));
+    base44.functions.invoke("markUpdatesSeen", { keys: list }).catch(() => {});
   }, []);
 
   if (loading) {
@@ -291,7 +293,7 @@ export default function Dashboard() {
               pending={data.pending}
               onSeen={markSeen}
               onAnalyze={analyzeOne}
-              analyzing={analyzing}
+              analyzingPlayerId={analyzingPlayerId}
             />
 
             <PlayoffRunway playoffOdds={data.playoffOdds} />

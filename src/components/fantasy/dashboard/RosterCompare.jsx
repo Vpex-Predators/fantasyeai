@@ -2,7 +2,7 @@ import PlayerCard from "./PlayerCard";
 import { sortStarters } from "@/lib/lineupOrder";
 import HudPanel from "@/components/hud/HudPanel";
 
-export default function RosterCompare({ starters, bench, pending, onSeen, onAnalyze, analyzing }) {
+export default function RosterCompare({ starters, bench, pending, onSeen, onAnalyze, analyzingPlayerId }) {
   const pendingSet = new Set(pending || []);
   const orderedStarters = sortStarters(starters);
   const starterProj = starters.reduce((s, p) => s + (p.weeklyProj || 0), 0).toFixed(1);
@@ -13,7 +13,7 @@ export default function RosterCompare({ starters, bench, pending, onSeen, onAnal
       key={p.id + "-" + p.slot}
       player={p}
       pending={pendingSet.has("p:" + p.id)}
-      analyzing={analyzing}
+      analyzing={analyzingPlayerId === p.id}
       onOpen={onSeen}
       onAnalyze={onAnalyze}
     />

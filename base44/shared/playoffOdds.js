@@ -150,12 +150,22 @@ export function computePlayoffOdds({ teams, schedule, currentPeriod, regSeasonPe
       if (!(a in teamById) || !(b in teamById)) continue;
       const sa = gauss(profiles[a].mean, profiles[a].std);
       const sb = gauss(profiles[b].mean, profiles[b].std);
-      pts[a] += sa; pts[b] += sb;
+      // pointsFor already includes in-progress current-week scoring. Replace
+      // that week's actuals with the simulated full-week score so tiebreaks
+      // don't double-count; future weeks still accumulate as simulated.
+      if (m.matchupPeriodId === currentPeriod) {
+        pts[a] += sa - (Number((m.home || {}).totalPoints) || 0);
+        pts[b] += sb - (Number((m.away || {}).totalPoints) || 0);
+      } else {
+        pts[a] += sa;
+        pts[b] += sb;
+      }
       if (forcedPeriods.has(m)) {
         const my = String(myTeamId);
         if (a === my) wins[a] += 1; else wins[b] += 1;
       } else if (sa > sb) wins[a] += 1;
       else if (sb > sa) wins[b] += 1;
+      else { wins[a] += 0.5; wins[b] += 0.5; }
     }
     const order = teams.map(t => t.id).sort((x, y) => (wins[y] - wins[x]) || (pts[y] - pts[x]));
     order.forEach((id, i) => {

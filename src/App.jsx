@@ -45,9 +45,11 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
+      const publicAuth = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/consent", "/about", "/contact"];
+      if (!publicAuth.includes(location.pathname)) {
+        navigateToLogin();
+        return null;
+      }
     }
   }
 

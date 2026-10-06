@@ -50,7 +50,7 @@ export default function Home() {
     (async () => {
       setLoading(true);
       try {
-        const res = await base44.functions.invoke("getDashboardData", {});
+        const res = await base44.functions.invoke("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
         if (!cancelled) {
           setData(res.data);
           setError(null);

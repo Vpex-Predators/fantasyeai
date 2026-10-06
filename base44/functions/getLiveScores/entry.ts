@@ -40,9 +40,9 @@ export default async function(req) {
     );
     let opponent = [];
     if (currentMatchup) {
-      const oppId = String(currentMatchup.home.teamId) === String(lock.team_id)
-        ? String(currentMatchup.away.teamId)
-        : String(currentMatchup.home.teamId);
+      const homeId = String((currentMatchup.home || {}).teamId ?? '');
+      const awayId = String((currentMatchup.away || {}).teamId ?? '');
+      const oppId = homeId === String(lock.team_id) ? awayId : homeId;
       const oppRaw = rawTeams.find(t => String(t.id) === oppId);
       if (oppRaw) opponent = parseTeamRoster(oppRaw, currentPeriod).map(trim);
     }

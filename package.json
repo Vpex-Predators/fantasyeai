@@ -1,5 +1,5 @@
 {
-  "name": "base44-app",
+  "name": "fantasyeai",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,9 +9,14 @@
     "lint": "eslint . --quiet",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p ./jsconfig.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:build:debug": "npm run android:sync && cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "@base44/sdk": "^0.8.53",
     "@base44/vite-plugin": "^1.0.44",
     "@hello-pangea/dnd": "^17.0.0",
@@ -79,6 +84,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
     "@eslint/js": "^9.19.0",
     "@types/node": "^22.13.5",
     "@types/react": "^18.2.66",

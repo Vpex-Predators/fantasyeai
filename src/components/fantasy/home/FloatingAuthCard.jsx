@@ -16,6 +16,17 @@ export default function FloatingAuthCard() {
   const [loading, setLoading] = useState(false);
   const returnTo = safeReturnTo();
 
+  // Independent Vercel preview must not send users through Base44-hosted OAuth.
+  if (import.meta.env.VITE_LEAGUE_API_URL) {
+    return <HudPanel>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2"><Radar className="h-5 w-5 text-emerald-400"/><h1 className="font-heading text-base font-bold text-white">FantasyEAi · Your leagues</h1></div>
+        <p className="text-sm text-white/65">Connect ESPN or Sleeper leagues and lock your team to your own account.</p>
+        <Link to="/leagues" className="flex min-h-[48px] items-center justify-center rounded bg-emerald-400 px-4 py-3 text-sm font-bold text-slate-950">Open account & league sign-in</Link>
+      </div>
+    </HudPanel>;
+  }
+
   // Signed in — collapse into a compact command profile chip.
   if (isAuthenticated && user) {
     return (

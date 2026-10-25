@@ -15,6 +15,7 @@ import RouteFallback from './components/RouteFallback';
 
 // Pages are code-split so the first paint doesn't wait on every tab's chunk.
 const Home = lazy(() => import('./pages/Home'));
+const LeagueHub = lazy(() => import('./pages/LeagueHub'));
 const Analyst = lazy(() => import('./pages/Analyst'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const WarRoom = lazy(() => import('./pages/WarRoom'));
@@ -45,7 +46,7 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      const publicAuth = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/consent", "/about", "/contact"];
+      const publicAuth = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/consent", "/about", "/contact", "/leagues"];
       if (!publicAuth.includes(location.pathname)) {
         navigateToLogin();
         return null;
@@ -59,6 +60,7 @@ const AuthenticatedApp = () => {
     <Suspense fallback={<RouteFallback />}>
       <AnimatePresence mode="wait" initial={false}>
         <Routes location={location} key={location.pathname}>
+          <Route path="/leagues" element={<PageTransition><LeagueHub /></PageTransition>} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
           <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />

@@ -41,6 +41,13 @@ export default function Login() {
     base44.auth.loginWithProvider("apple", returnTo);
   };
 
+  // The Vercel account hub owns independent Google OAuth; never redirect to Base44 here.
+  if (import.meta.env.VITE_LEAGUE_API_URL) return (
+    <AuthLayout icon={LogIn} title="FantasyEAi Account" subtitle="Sign in to sync your fantasy leagues">
+      <Link to="/leagues" className="flex min-h-[48px] items-center justify-center rounded bg-emerald-400 px-4 font-bold text-slate-950">Continue to Google sign-in</Link>
+    </AuthLayout>
+  );
+
   return (
     <AuthLayout
       icon={LogIn}

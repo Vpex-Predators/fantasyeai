@@ -1,0 +1,20 @@
+name: FantasyEAi Production Simulation Release Validation
+on:
+  push:
+    branches:
+      - release/validated-simulations-20261024
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Node version
+        run: node --version
+      - name: Validate production simulation API
+        run: node --test tests/playoffOdds.release.test.js

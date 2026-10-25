@@ -7,6 +7,7 @@ export const base44 = createClient({
   appId,
   token,
   functionsVersion,
-  serverUrl: '',
+  // Keep Base44-hosted app behavior, but support an independently hosted preview.
+  serverUrl: import.meta.env.VITE_BASE44_SERVER_URL || '',
   appBaseUrl
 });

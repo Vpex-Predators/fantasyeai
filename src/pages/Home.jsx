@@ -80,6 +80,12 @@ export default function Home() {
 
       <div className="relative z-10 mx-auto max-w-2xl space-y-2.5 px-3 pt-3">
         <FloatingAuthCard />
+        {import.meta.env.VITE_LEAGUE_API_URL && (
+          <Link to="/leagues" className="flex min-h-[48px] items-center justify-between rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-200">
+            <span>My leagues · Connect ESPN or Sleeper</span>
+            <span aria-hidden="true">→</span>
+          </Link>
+        )}
 
         {loadingBriefing ? (
           <div className="flex justify-center py-10">

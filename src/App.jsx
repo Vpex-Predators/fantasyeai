@@ -46,7 +46,7 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      const publicAuth = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/consent", "/about", "/contact"];
+      const publicAuth = ["/login", "/register", "/forgot-password", "/reset-password", "/oauth/consent", "/about", "/contact", "/leagues"];
       if (!publicAuth.includes(location.pathname)) {
         navigateToLogin();
         return null;

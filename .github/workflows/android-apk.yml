@@ -22,7 +22,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-      - uses: android-actions/setup-android@07976c6290703d34c16d382cb36445f98bb43d7 # v3
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
       - name: Install pinned JS dependencies
         run: |
           npm ci

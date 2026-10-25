@@ -76,6 +76,12 @@ export default function Register() {
     base44.auth.loginWithProvider("apple", safeReturnTo());
   };
 
+  if (import.meta.env.VITE_LEAGUE_API_URL) return (
+    <AuthLayout icon={UserPlus} title="Create a FantasyEAi Account" subtitle="Your fantasy leagues stay connected to your Google account">
+      <Link to="/leagues" className="flex min-h-[48px] items-center justify-center rounded bg-emerald-400 px-4 font-bold text-slate-950">Continue with Google</Link>
+    </AuthLayout>
+  );
+
   if (showOtp) {
     return (
       <AuthLayout

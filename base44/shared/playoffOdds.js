@@ -21,6 +21,17 @@ function playOne(a, b, profiles) {
   return gauss(profiles[a].mean, profiles[a].std) >= gauss(profiles[b].mean, profiles[b].std) ? a : b;
 }
 
+// ESPN bye weeks omit one side. Those rows are not games: counting them as
+// games left, or as one of "my next N wins", skips the win because the sim
+// bails out when the missing side is not a team.
+function isPlayableMatchup(m, teamById) {
+  const homeId = m && m.home && m.home.teamId != null ? String(m.home.teamId) : '';
+  const awayId = m && m.away && m.away.teamId != null ? String(m.away.teamId) : '';
+  if (!homeId || !awayId) return false;
+  if (teamById && (!(homeId in teamById) || !(awayId in teamById))) return false;
+  return true;
+}
+
 function playBracket(field, profiles) {
   let round = field.slice();
   if (field.length === 6) {
@@ -95,7 +106,7 @@ export function computePlayoffOdds({ teams, schedule, currentPeriod, regSeasonPe
   const wp = (a, b) => normalCdf((profiles[a].mean - profiles[b].mean) / Math.sqrt(profiles[a].std ** 2 + profiles[b].std ** 2));
 
   const remaining = (schedule || [])
-    .filter(m => m.matchupPeriodId >= currentPeriod && m.matchupPeriodId <= regSeasonPeriods)
+    .filter(m => m.matchupPeriodId >= currentPeriod && m.matchupPeriodId <= regSeasonPeriods && isPlayableMatchup(m, teamById))
     .sort((a, b) => a.matchupPeriodId - b.matchupPeriodId);
 
   // Win-probability model view of my remaining schedule.
@@ -219,7 +230,11 @@ export function computeThreatBoard({ teams, schedule, currentPeriod, regSeasonPe
 
   const { profiles } = buildProfiles({ teams, schedule, currentPeriod, gamesPlayed });
 
-  const remaining = (schedule || []).filter(m => m.matchupPeriodId >= currentPeriod && m.matchupPeriodId <= regSeasonPeriods);
+  const teamIds = {};
+  for (const t of teams) teamIds[t.id] = true;
+  const remaining = (schedule || []).filter(m =>
+    m.matchupPeriodId >= currentPeriod && m.matchupPeriodId <= regSeasonPeriods && isPlayableMatchup(m, teamIds)
+  );
   const meetingsLeft = {};
   for (const m of remaining) {
     const a = String((m.home || {}).teamId ?? '');

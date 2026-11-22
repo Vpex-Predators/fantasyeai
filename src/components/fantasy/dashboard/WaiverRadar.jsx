@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { AlertTriangle, ChevronDown, ChevronUp, ExternalLink, Loader2, Newspaper, Radar, Trash2 } from "lucide-react";
 import GlossaryChip from "@/components/hud/GlossaryChip";
@@ -40,6 +40,7 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
   const [posTab, setPosTab] = useState("All");
   const [scannedAt, setScannedAt] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const autoRanRef = useRef(false);
   const { toast } = useToast();
 
   // Quick live flags from the lineup: injured starters without a backup.
@@ -66,9 +67,11 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
         TIMEOUTS.scan,
         "The wire scan took too long."
       );
-      setTargets(res.data.targets || []);
+      const list = res.data.targets || [];
+      setTargets(list);
       setWeaknesses(res.data.weaknesses || []);
       setScannedAt(res.data.scanned_at || null);
+      return list;
     } catch (err) {
       setTargets(snapshot.targets);
       setWeaknesses(snapshot.weaknesses);
@@ -76,13 +79,27 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
       const message = errorText(err, "Scan failed — try again in a bit.");
       setError(message);
       toast({ title: "Scan didn't finish", description: message, variant: "destructive" });
+      return null;
     } finally {
       setScanning(false);
     }
   };
 
-  // On open, load this week's scan from the cache — instant after the first scan of the week.
-  useEffect(() => { scan(false); }, []);
+  // On open, load this week's scan from the cache — instant after the first scan
+  // of the week. If there is no cached scan for this week (or it came back
+  // empty), run one fresh scan by itself so the radar lands with its picks
+  // already on screen instead of waiting on a tap.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const cached = await scan(false);
+      if (alive && !autoRanRef.current && !cached?.length) {
+        autoRanRef.current = true;
+        await scan(true);
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
 
   // Hand the scan handler to the page so pull-to-refresh can trigger it.
   useEffect(() => { onScanReady?.(scan); }, [onScanReady]);
@@ -253,7 +270,7 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
 
       {!scanning && !targets && (
         <p className="text-sm text-white/40">
-          Hit “Scan the wire” for targets picked around your team’s weak spots, hidden gems and injury backups.
+          No scan yet — tap “Scan the wire” to run one against your team’s weak spots, hidden gems and injury backups.
         </p>
       )}
 

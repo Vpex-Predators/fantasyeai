@@ -35,7 +35,7 @@ export default function GlossaryChip({ term, children, bare = false, className =
       {open && (
         <span
           onClick={(e) => e.stopPropagation()}
-          className="absolute left-0 top-full z-50 mt-1 w-52 rounded-lg border border-emerald-400/30 bg-slate-900/95 px-2.5 py-2 text-[10px] font-normal normal-case leading-snug text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+          className="absolute left-0 top-full z-50 mt-1 w-52 rounded-lg border border-emerald-400/30 bg-slate-900/95 px-2.5 py-2 text-sm font-normal normal-case leading-snug text-white/80 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-xl"
         >
           {def}
         </span>

@@ -12,6 +12,8 @@ import usePullToRefresh from "@/hooks/usePullToRefresh";
 import PullIndicator from "@/components/hud/PullIndicator";
 import TabFade from "@/components/hud/TabFade";
 import RouteFallback from "@/components/RouteFallback";
+import { useToast } from "@/components/ui/use-toast";
+import { TIMEOUTS, errorText, withTimeout } from "@/lib/optimistic";
 
 // Heavy chart chunk loads only when the Season tab is opened.
 const SeasonScoreChart = lazy(() => import("@/components/fantasy/dashboard/SeasonScoreChart"));
@@ -25,6 +27,7 @@ import { PlayerNameProvider } from "@/components/PlayerNameProvider";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [data, setData] = useState(null);
   const [matchup, setMatchup] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,6 +40,11 @@ export default function Dashboard() {
     return ["matchup", "swap", "season", "league"].includes(t) ? t : "matchup";
   });
   const hasTrackedView = useRef(false);
+  // Snapshot of the last good board, used to roll back a failed optimistic action.
+  const dataRef = useRef(null);
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
   const loadBoard = useCallback(async () => {
     const res = await base44.functions.invoke("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
     setData(res.data);
@@ -62,38 +70,54 @@ export default function Dashboard() {
     return () => { cancelled = true; };
   }, [loadBoard]);
 
+  // Pending state is set on the card immediately; a failure rolls it back and
+  // raises a toast instead of leaving the card spinning.
   const analyzeOne = async player => {
     setAnalyzingPlayerId(player.id);
     try {
-      await base44.functions.invoke("analyzePlayers", {
-        players: [{
-          id: player.id,
-          name: player.name,
-          position: player.position,
-          opponent: data?.opponent ? data.opponent.name : "TBD",
-          weeklyProj: player.weeklyProj,
-          seasonAvg: player.seasonAvg,
-          injuryStatus: player.injuryStatus
-        }],
-        week: data?.league?.week
-      });
+      await withTimeout(
+        base44.functions.invoke("analyzePlayers", {
+          players: [{
+            id: player.id,
+            name: player.name,
+            position: player.position,
+            opponent: data?.opponent ? data.opponent.name : "TBD",
+            weeklyProj: player.weeklyProj,
+            seasonAvg: player.seasonAvg,
+            injuryStatus: player.injuryStatus
+          }],
+          week: data?.league?.week
+        }),
+        TIMEOUTS.analyze,
+        "The player read took too long."
+      );
       await loadBoard();
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      const message = errorText(err, "Couldn't analyze that player.");
+      setError(message);
+      toast({ title: "Analysis failed", description: message, variant: "destructive" });
     } finally {
       setAnalyzingPlayerId(null);
     }
   };
 
   const analyzeMatchupNow = async () => {
+    const previous = matchup;
     setAnalyzing(true);
     try {
-      const res = await base44.functions.invoke("analyzeMatchup", {});
+      const res = await withTimeout(
+        base44.functions.invoke("analyzeMatchup", {}),
+        TIMEOUTS.analyze,
+        "The matchup read took too long."
+      );
       setMatchup(res.data);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      setMatchup(previous);
+      const message = errorText(err, "Couldn't analyze this matchup.");
+      setError(message);
+      toast({ title: "Analysis failed", description: message, variant: "destructive" });
     } finally {
       setAnalyzing(false);
     }
@@ -101,9 +125,16 @@ export default function Dashboard() {
 
   // Manual refresh: cheap live-scores update only — no AI re-analysis.
   const lightRefresh = useCallback(async () => {
+    const snapshot = dataRef.current;
     setRefreshing(true);
+    // Immediate feedback: stamp the sync time before the request lands.
+    setData(prev => (prev ? { ...prev, lastRefresh: new Date().toISOString() } : prev));
     try {
-      const res = await base44.functions.invoke("getLiveScores", { localDate: new Date().toLocaleDateString("en-CA") });
+      const res = await withTimeout(
+        base44.functions.invoke("getLiveScores", { localDate: new Date().toLocaleDateString("en-CA") }),
+        TIMEOUTS.refresh,
+        "Live scores took too long to load."
+      );
       const live = res.data;
       const mine = new Map((live.mine || []).map(p => [p.id, p]));
       const opp = new Map((live.opponent || []).map(p => [p.id, p]));
@@ -128,11 +159,16 @@ export default function Dashboard() {
       });
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.error || err.message);
+      // Roll back to the last good board so a failed refresh never leaves
+      // half-updated numbers on screen.
+      if (snapshot) setData(snapshot);
+      const message = errorText(err, "Couldn't refresh live scores.");
+      setError(message);
+      toast({ title: "Refresh failed", description: message, variant: "destructive" });
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [toast]);
 
   // Native-style pull-to-refresh: drag down from the top to run the same
   // cheap live-scores refresh as the refresh button.
@@ -148,7 +184,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">
+      <div className="flex min-h-screen-safe items-center justify-center bg-slate-950 text-white">
         <Loader2 className="h-8 w-8 animate-spin text-emerald-400" />
       </div>
     );
@@ -156,7 +192,7 @@ export default function Dashboard() {
 
   if (!data) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-slate-950 px-6 text-center text-white">
+      <div className="flex min-h-screen-safe flex-col items-center justify-center gap-4 bg-slate-950 px-6 text-center text-white">
         <p className="text-sm text-white/60">{error}</p>
         <button
           onClick={() => loadBoard().catch(err => setError(err.response?.data?.error || err.message))}
@@ -171,11 +207,11 @@ export default function Dashboard() {
 
   if (!data.locked) {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
+      <div className="relative min-h-screen-safe overflow-hidden bg-slate-950 text-white">
         <GlassBackdrop />
         <HudStatusBar title="My team command" sub={`${data.league.name.trim()} · WK ${data.league.week}`} tag="STANDBY" />
         <div className="relative z-10 mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-4 text-center">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-emerald-400/80">
+          <p className="text-sm font-semibold uppercase tracking-widest text-emerald-400/80">
             {data.league.name} · Week {data.league.week}
           </p>
           <h1 className="mt-2 font-heading text-3xl font-bold">Your live league HQ</h1>
@@ -197,7 +233,7 @@ export default function Dashboard() {
   const anyLive = [...(data.myTeam.starters || []), ...(data.opponentStarters || [])].some(p => p.livePoints != null);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
+    <div className="relative min-h-screen-safe overflow-hidden bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
       <GlassBackdrop />
       <HudStatusBar
         title="My team command"
@@ -238,7 +274,7 @@ export default function Dashboard() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`no-callout min-h-[44px] rounded-full px-1 text-sm font-bold uppercase tracking-[0.15em] transition-all duration-300 ${
+              className={`no-callout min-h-[48px] rounded-full px-1 text-sm font-bold uppercase tracking-[0.15em] transition-all duration-300 ${
                 tab === t.id
                   ? "bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 shadow-[0_0_16px_rgba(52,211,153,0.45)]"
                   : "text-white/55 hover:text-white"
@@ -257,7 +293,7 @@ export default function Dashboard() {
                 <span className="font-semibold text-white">{data.myTeam.pointsFor} pts for</span> ·{" "}
                 <span className="font-semibold text-white">{data.myTeam.pointsAgainst} against</span>
               </p>
-              <p className="mt-0.5 text-[10px] text-white/60">Starters-only scoring across completed weeks.</p>
+              <p className="mt-0.5 text-sm text-white/60">Starters-only scoring across completed weeks.</p>
             </HudPanel>
             <Suspense fallback={<RouteFallback compact />}>
               <SeasonScoreChart

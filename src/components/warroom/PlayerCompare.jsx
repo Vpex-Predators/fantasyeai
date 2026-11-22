@@ -83,7 +83,7 @@ export default function PlayerCompare({ data, initialIds }) {
         {pickA && (
           <button
             onClick={() => { setPickA(null); setPickB(null); }}
-            className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white/70 transition-colors hover:text-emerald-300"
+            className="flex items-center gap-1 text-sm font-bold uppercase tracking-wider text-white/70 transition-colors hover:text-emerald-300"
           >
             <RotateCcw className="h-3 w-3" /> New
           </button>
@@ -100,14 +100,14 @@ export default function PlayerCompare({ data, initialIds }) {
           <div className="mt-3 grid grid-cols-[1fr_auto_1fr] items-center gap-1">
             <div className="min-w-0 text-right">
               <p className="truncate text-xs font-semibold text-white">{short(pickA.name)}</p>
-              <p className="truncate text-[9px] uppercase tracking-wider text-white/60">
+              <p className="truncate text-sm uppercase tracking-wider text-white/60">
                 {positionLabel(pickA.position)} · {pickA.teamLabel}
               </p>
             </div>
-            <span className="px-1 font-heading text-[10px] font-bold italic tracking-widest text-white/70">VS</span>
+            <span className="px-1 font-heading text-sm font-bold italic tracking-widest text-white/70">VS</span>
             <div className="min-w-0 text-left">
               <p className="truncate text-xs font-semibold text-white">{short(pickB.name)}</p>
-              <p className="truncate text-[9px] uppercase tracking-wider text-white/60">
+              <p className="truncate text-sm uppercase tracking-wider text-white/60">
                 {positionLabel(pickB.position)} · {pickB.teamLabel}
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function PlayerCompare({ data, initialIds }) {
             {rows.map(r => (
               <div key={r.key} className="grid grid-cols-[1fr_auto_1fr] items-center gap-1 rounded-lg bg-white/[0.04] px-2.5 py-1.5">
                 <span className={cn("truncate text-right font-mono text-xs", r.leader === "a" ? "font-bold text-emerald-300" : "text-white/80")}>{r.a}</span>
-                <span className="whitespace-nowrap px-1 text-[9px] font-semibold uppercase tracking-wider text-white/60">{r.label}</span>
+                <span className="whitespace-nowrap px-1 text-sm font-semibold uppercase tracking-wider text-white/60">{r.label}</span>
                 <span className={cn("truncate text-left font-mono text-xs", r.leader === "b" ? "font-bold text-emerald-300" : "text-white/80")}>{r.b}</span>
               </div>
             ))}
@@ -125,7 +125,7 @@ export default function PlayerCompare({ data, initialIds }) {
 
           {edge && (
             <div className="mt-2.5 rounded-lg border border-emerald-400/25 bg-emerald-400/10 px-3 py-2">
-              <p className="text-[11px] font-semibold text-emerald-300">{edge}</p>
+              <p className="text-sm font-semibold text-emerald-300">{edge}</p>
               {/* Week-projection split drawn as two growing bars */}
               <div className="mt-1.5 flex items-center gap-1.5">
                 <DrawBar
@@ -138,7 +138,7 @@ export default function PlayerCompare({ data, initialIds }) {
           )}
         </>
       ) : (
-        <p className="mt-3 text-[11px] leading-relaxed text-white/70">
+        <p className="mt-3 text-sm leading-relaxed text-white/70">
           Pick any two players — every roster in the league plus free agents — and see week projections, season outlook, live points and injuries side by side.
         </p>
       )}

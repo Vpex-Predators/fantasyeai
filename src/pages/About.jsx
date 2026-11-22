@@ -7,14 +7,14 @@ import HudPanel from "@/components/hud/HudPanel";
 // Public About page — what the app does, who it's for, and who builds it.
 export default function About() {
   return (
-    <div className="min-h-screen bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
+    <div className="min-h-screen-safe bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
       <GlassBackdrop />
       <HudStatusBar title="About" sub="What this app is & who it's for" tag="INFO" />
 
       <div className="relative z-10 mx-auto max-w-2xl space-y-2.5 px-3 pt-3">
         <HudPanel label="About FantasyEdge AI">
           <h1 className="font-heading text-lg font-bold tracking-tight text-white">FantasyEdge AI</h1>
-          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-emerald-300/70">
+          <p className="mt-1 font-mono text-sm uppercase tracking-[0.16em] text-emerald-300/70">
             NFL fantasy companion · numbers over vibes
           </p>
           <div className="mt-3 space-y-3 text-sm leading-relaxed text-white/75">

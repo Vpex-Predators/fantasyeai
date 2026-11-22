@@ -40,6 +40,7 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -64,13 +65,13 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, reloadKey]);
 
   const loadingBriefing = isLoadingAuth || (isAuthenticated && loading && !data);
   const d = data && data.locked ? data : null;
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
+    <div className="min-h-screen-safe bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
       <GlassBackdrop />
       <HudStatusBar
         title="Command center"
@@ -87,14 +88,23 @@ export default function Home() {
           </div>
         ) : !isAuthenticated ? (
           <>
-            <p className="flex items-center justify-center gap-2 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-white/45">
+            <p className="flex items-center justify-center gap-2 text-center font-mono text-sm uppercase tracking-[0.18em] text-white/45">
               <Radar className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
               Matchup, waiver & league previews load here
             </p>
             <LockedSkeleton />
           </>
         ) : error ? (
-          <div className="border border-rose-400/30 bg-rose-400/10 p-3 font-mono text-xs text-rose-300">{error}</div>
+          <div className="border border-rose-400/30 bg-rose-400/10 p-3 font-mono text-sm text-rose-300">
+            <p>{error}</p>
+            <button
+              type="button"
+              onClick={() => setReloadKey(k => k + 1)}
+              className="no-callout mt-2 flex min-h-[48px] items-center rounded-full bg-emerald-400 px-4 text-sm font-bold uppercase tracking-wider text-slate-950"
+            >
+              Try again
+            </button>
+          </div>
         ) : data && !data.locked ? (
           <div className="border border-emerald-400/25 bg-emerald-400/10 p-5 text-center">
             <Lock className="mx-auto h-6 w-6 text-emerald-300" />
@@ -124,7 +134,7 @@ export default function Home() {
           </PlayerNameProvider>
         ) : null}
 
-        <footer className="flex items-center justify-center gap-3 pt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40">
+        <footer className="flex items-center justify-center gap-3 pt-1 font-mono text-sm uppercase tracking-[0.16em] text-white/40">
           <Link to="/about" className="no-callout transition-colors hover:text-white/70">About</Link>
           <span aria-hidden="true">·</span>
           <Link to="/contact" className="no-callout transition-colors hover:text-white/70">Contact</Link>

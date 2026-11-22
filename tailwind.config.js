@@ -62,6 +62,11 @@ module.exports = {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+  		// 14px is the body/interactive floor: `text-xs` is mapped up to it so
+  		// nothing in the UI can render below the Android accessibility minimum.
+  		fontSize: {
+  			xs: ['0.875rem', { lineHeight: '1.3' }]
+  		},
   		fontFamily: {
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],

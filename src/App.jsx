@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
+import OfflineBanner from './components/OfflineBanner';
 import { Suspense, lazy } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
@@ -87,6 +88,7 @@ function App() {
         <QueryClientProvider client={queryClientInstance}>
           <Router>
             <ScrollToTop />
+            <OfflineBanner />
             <MotionConfig reducedMotion="user">
               <AuthenticatedApp />
             </MotionConfig>

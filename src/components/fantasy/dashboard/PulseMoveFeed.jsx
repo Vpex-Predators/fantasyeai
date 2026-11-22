@@ -14,15 +14,15 @@ const KIND_META = {
 export default function PulseMoveFeed({ moves, available }) {
   return (
     <div>
-      <h3 className="mb-1.5 font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+      <h3 className="mb-1.5 font-heading text-sm font-bold uppercase tracking-[0.2em] text-white/70">
         Move log
       </h3>
       {!available ? (
-        <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-[11px] text-white/60">
+        <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-sm text-white/60">
           Move log unavailable right now — the standings and totals above are still live.
         </p>
       ) : !moves.length ? (
-        <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-[11px] text-white/60">
+        <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-sm text-white/60">
           No roster moves logged yet — a suspiciously quiet league.
         </p>
       ) : (
@@ -35,18 +35,18 @@ export default function PulseMoveFeed({ moves, available }) {
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${meta.cls}`}>
                   <Icon className="h-3 w-3" />
                 </span>
-                <p className="min-w-0 flex-1 truncate text-[11px] text-white/80">
+                <p className="min-w-0 flex-1 truncate text-sm text-white/80">
                   <span className="font-semibold text-white">{m.team}</span> {m.text}
                 </p>
                 {m.week != null && (
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-wider text-white/60">WK {m.week}</span>
+                  <span className="shrink-0 font-mono text-sm uppercase tracking-wider text-white/60">WK {m.week}</span>
                 )}
               </li>
             );
           })}
         </ul>
       )}
-      <p className="mt-1.5 text-[9px] text-white/50">
+      <p className="mt-1.5 text-sm text-white/50">
         Adds and claims come off the{" "}
         <GlossaryChip term="waiver wire">wire</GlossaryChip> — drops free the player for everyone else.
       </p>

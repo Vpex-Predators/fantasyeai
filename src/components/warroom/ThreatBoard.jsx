@@ -36,7 +36,7 @@ export default function ThreatBoard({ board }) {
           <div className="mt-3 space-y-1.5">
             {(keepAhead.progression || []).map((p) => (
               <div key={p.wins} className="flex items-center gap-2">
-                <span className="w-9 shrink-0 font-mono text-[10px] text-white/50">+{p.wins}W</span>
+                <span className="w-9 shrink-0 font-mono text-sm text-white/50">+{p.wins}W</span>
                 <div className="h-1.5 flex-1 bg-white/10">
                   <div
                     className={`h-full ${
@@ -45,12 +45,12 @@ export default function ThreatBoard({ board }) {
                     style={{ width: `${p.playoffPct ?? 0}%` }}
                   />
                 </div>
-                <span className="w-9 shrink-0 text-right font-mono text-[10px] font-bold text-white/70">
+                <span className="w-9 shrink-0 text-right font-mono text-sm font-bold text-white/70">
                   {p.playoffPct == null ? "—" : `${p.playoffPct}%`}
                 </span>
               </div>
             ))}
-            <p className="border-t border-dashed border-white/10 pt-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/35">
+            <p className="border-t border-dashed border-white/10 pt-2 font-mono text-sm uppercase tracking-[0.15em] text-white/35">
               My playoff odds as extra wins stack · {keepAhead.gamesLeft} games left
             </p>
           </div>

@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 // because the whole card is already the link — this is the obvious visual cue.
 export default function OpenButton({ children, className = "" }) {
   return (
-    <span className={`cloud-btn no-callout inline-flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-semibold ${className}`}>
+    <span className={`cloud-btn no-callout inline-flex min-h-[48px] shrink-0 items-center gap-1.5 rounded-full px-4 text-sm font-semibold ${className}`}>
       {children}
       <ArrowRight className="h-4 w-4" />
     </span>

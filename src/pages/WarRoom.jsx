@@ -25,6 +25,7 @@ export default function WarRoom() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
   // A ?compare=id1,id2 link (from the My Team swap view) opens straight into the compare tool.
   const [tab, setTab] = useState(() =>
     new URLSearchParams(window.location.search).get("compare") ? "trade" : "threats"
@@ -57,7 +58,7 @@ export default function WarRoom() {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated]);
+  }, [isAuthenticated, reloadKey]);
 
   const loadingData = isLoadingAuth || (isAuthenticated && loading && !data);
   const d = data && data.locked ? data : null;
@@ -66,7 +67,7 @@ export default function WarRoom() {
     : [];
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
+    <div className="min-h-screen-safe bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
       <GlassBackdrop />
       <HudStatusBar
         title="War room"
@@ -81,13 +82,22 @@ export default function WarRoom() {
             <Loader2 className="h-7 w-7 animate-spin text-emerald-400" />
           </div>
         ) : error ? (
-          <div className="border border-rose-400/30 bg-rose-400/10 p-3 font-mono text-xs text-rose-300">{error}</div>
+          <div className="border border-rose-400/30 bg-rose-400/10 p-3 font-mono text-sm text-rose-300">
+            <p>{error}</p>
+            <button
+              type="button"
+              onClick={() => setReloadKey(k => k + 1)}
+              className="no-callout mt-2 flex min-h-[48px] items-center rounded-full bg-emerald-400 px-4 text-sm font-bold uppercase tracking-wider text-slate-950"
+            >
+              Try again
+            </button>
+          </div>
         ) : !isAuthenticated ? (
           <HudPanel label="Access restricted">
             <p className="text-xs text-white/60">Sign in from the command briefing to access war room intel.</p>
             <Link
               to="/"
-              className="mt-3 inline-block bg-emerald-400 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300"
+              className="mt-3 inline-block bg-emerald-400 px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300"
             >
               Back to briefing
             </Link>
@@ -97,7 +107,7 @@ export default function WarRoom() {
             <p className="text-xs text-white/60">Lock in your team to activate war room intel.</p>
             <Link
               to="/dashboard"
-              className="mt-3 inline-block bg-emerald-400 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300"
+              className="mt-3 inline-block bg-emerald-400 px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300"
             >
               Go to dashboard
             </Link>
@@ -109,7 +119,7 @@ export default function WarRoom() {
                 <button
                   key={t.id}
                   onClick={() => setTab(t.id)}
-                  className={`no-callout min-h-[44px] rounded-full px-1 text-sm font-bold uppercase tracking-[0.15em] transition-all duration-300 ${
+                  className={`no-callout min-h-[48px] rounded-full px-1 text-sm font-bold uppercase tracking-[0.15em] transition-all duration-300 ${
                     tab === t.id
                       ? "bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 shadow-[0_0_16px_rgba(52,211,153,0.45)]"
                       : "text-white/55 hover:text-white"

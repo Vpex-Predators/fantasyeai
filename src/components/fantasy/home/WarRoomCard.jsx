@@ -22,30 +22,30 @@ export default function WarRoomCard({ data, delay = 0 }) {
       >
         {threat ? (
           <>
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">Biggest threat this week</p>
+            <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/60">Biggest threat this week</p>
             <div className="mt-1.5 rounded-lg border border-rose-400/25 bg-rose-400/10 px-2 py-1.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="min-w-0 truncate text-[11px] font-bold text-white">
+                <span className="min-w-0 truncate text-sm font-bold text-white">
                   {short(threat.name)}{" "}
                   <span className="font-normal text-white/45">({threat.realPosition || threat.position})</span>
                 </span>
-                <span className="shrink-0 font-mono text-[11px] font-bold text-rose-300">
+                <span className="shrink-0 font-mono text-sm font-bold text-rose-300">
                   {threat.weeklyProj != null ? `${threat.weeklyProj} proj` : "—"}
                 </span>
               </div>
               {opponent && (
-                <p className="mt-0.5 text-[10px] text-white/55">
+                <p className="mt-0.5 text-sm text-white/55">
                   Top projected starter for {opponent.name}.
                 </p>
               )}
             </div>
           </>
         ) : (
-          <p className="text-[11px] text-white/55">
+          <p className="text-sm text-white/55">
             {opponent ? "No opponent projections posted yet." : "BYE week — scout the wire and the trade market."}
           </p>
         )}
-        <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-[10px] text-white/55">
+        <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm text-white/55">
           <span className="min-w-0">Threat board · power rankings · trade sims</span>
           <OpenButton>Open war room</OpenButton>
         </div>

@@ -10,17 +10,17 @@ function BenchColumn({ title, tone, players }) {
   const sorted = [...(players || [])].sort((a, b) => eff(b) - eff(a));
   return (
     <div className="min-w-0 flex-1">
-      <p className={`mb-1.5 truncate text-[10px] font-bold uppercase tracking-wider ${tone}`}>{title}</p>
+      <p className={`mb-1.5 truncate text-sm font-bold uppercase tracking-wider ${tone}`}>{title}</p>
       <div className="space-y-1">
-        {sorted.length === 0 && <p className="text-[11px] text-white/35">Empty bench</p>}
+        {sorted.length === 0 && <p className="text-sm text-white/35">Empty bench</p>}
         {sorted.slice(0, 6).map(p => (
-          <div key={p.id} className="flex min-w-0 items-center gap-1 text-[11px]">
+          <div key={p.id} className="flex min-w-0 items-center gap-1 text-sm">
             <span className="truncate text-white/70">{short(p.name)}</span>
             <InjuryBadge status={p.injuryStatus} />
             <span className="ml-auto shrink-0 font-mono text-white/50">{eff(p).toFixed(1)}</span>
           </div>
         ))}
-        {sorted.length > 6 && <p className="text-[10px] text-white/30">+{sorted.length - 6} more</p>}
+        {sorted.length > 6 && <p className="text-sm text-white/30">+{sorted.length - 6} more</p>}
       </div>
     </div>
   );
@@ -41,8 +41,8 @@ export default function BenchDepth({ myBench, oppBench, myName, oppName }) {
   return (
     <div className="mt-3 border-t border-white/10 pt-3">
       <div className="mb-2 flex items-baseline justify-between">
-        <h3 className="text-[10px] font-semibold uppercase tracking-widest text-white/40">Bench depth</h3>
-        <span className="text-[10px] text-white/40">{myTotal.toFixed(1)} vs {oppTotal.toFixed(1)}</span>
+        <h3 className="text-sm font-semibold uppercase tracking-widest text-white/40">Bench depth</h3>
+        <span className="text-sm text-white/40">{myTotal.toFixed(1)} vs {oppTotal.toFixed(1)}</span>
       </div>
       <div className="flex gap-3">
         <BenchColumn title={myName} tone="text-emerald-300/90" players={myBench} />
@@ -52,8 +52,8 @@ export default function BenchDepth({ myBench, oppBench, myName, oppName }) {
         <div className="bg-emerald-400" style={{ width: myPct + "%" }} />
         <div className="flex-1 bg-rose-400/70" />
       </div>
-      <p className="mt-2 text-[11px] font-semibold text-white/75">{verdict}</p>
-      <p className="text-[10px] text-white/35">Bench points don't count toward the matchup totals.</p>
+      <p className="mt-2 text-sm font-semibold text-white/75">{verdict}</p>
+      <p className="text-sm text-white/35">Bench points don't count toward the matchup totals.</p>
     </div>
   );
 }

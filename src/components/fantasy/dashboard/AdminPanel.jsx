@@ -93,13 +93,13 @@ export default function AdminPanel({ isAdmin, teams }) {
                 <UiSelect value={String(l.team_id || "")} onValueChange={v => update(l.id, "team_id", v)}>
                   <SelectTrigger
                     aria-label={`Team pick for ${l.email}`}
-                    className="h-8 rounded-md border-white/15 bg-slate-900 px-2 text-[11px] text-white shadow-none"
+                    className="h-8 rounded-md border-white/15 bg-slate-900 px-2 text-sm text-white shadow-none"
                   >
                     <SelectValue placeholder="Team" />
                   </SelectTrigger>
                   <SelectContent className="border-white/10 bg-slate-900 text-white">
                     {(teams || []).map(t => (
-                      <SelectItem key={t.id} value={String(t.id)} className="text-[11px] text-white/85 focus:bg-white/10 focus:text-white">
+                      <SelectItem key={t.id} value={String(t.id)} className="text-sm text-white/85 focus:bg-white/10 focus:text-white">
                         {t.name}
                       </SelectItem>
                     ))}
@@ -109,26 +109,26 @@ export default function AdminPanel({ isAdmin, teams }) {
                   type="date"
                   value={(l.birthday || "").slice(0, 10)}
                   onChange={e => update(l.id, "birthday", e.target.value)}
-                  className="h-8 border-white/15 bg-slate-900 text-[11px] text-white"
+                  className="h-8 border-white/15 bg-slate-900 text-sm text-white"
                 />
                 <Input
                   value={l.espn_email || ""}
                   onChange={e => update(l.id, "espn_email", e.target.value)}
                   placeholder="ESPN email"
-                  className="h-8 border-white/15 bg-slate-900 text-[11px] text-white"
+                  className="h-8 border-white/15 bg-slate-900 text-sm text-white"
                 />
                 <Button
                   onClick={() => saveLock(l)}
                   disabled={busyId === l.id}
                   size="sm"
-                  className="h-8 bg-amber-400 text-[11px] font-bold text-slate-950 hover:bg-amber-300"
+                  className="h-8 bg-amber-400 text-sm font-bold text-slate-950 hover:bg-amber-300"
                 >
                   {busyId === l.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save"}
                 </Button>
               </div>
             </div>
           ))}
-          <p className="text-[10px] text-white/40">
+          <p className="text-sm text-white/40">
             You can fix birthdays, ESPN emails, wrong team picks, or unlock a pick entirely.
           </p>
         </div>

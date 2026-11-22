@@ -39,7 +39,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
+    <div className="min-h-screen-safe bg-slate-950 pb-[calc(env(safe-area-inset-bottom)+7rem)] text-white">
       <GlassBackdrop />
       <HudStatusBar title="Contact" sub="Feedback, bugs & questions" tag="INFO" />
 
@@ -92,7 +92,7 @@ export default function Contact() {
                 {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 {sending ? "Sending…" : "Send message"}
               </button>
-              <p className="text-[10px] text-white/45">
+              <p className="text-sm text-white/45">
                 Your message goes straight to the app owner — no newsletter, no spam.
               </p>
             </form>

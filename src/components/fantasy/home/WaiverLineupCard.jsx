@@ -63,7 +63,7 @@ export default function WaiverLineupCard({ data, delay = 0 }) {
     <Link to="/waivers" className="no-callout block rounded-2xl transition-transform duration-200 active:scale-[0.99]">
       <HudPanel label="Waivers & lineup" right={`WK ${data.league.week}`} delay={delay} compact>
         {loading ? (
-          <div className="flex items-center gap-2 text-[11px] text-white/55">
+          <div className="flex items-center gap-2 text-sm text-white/55">
             <Loader2 className="h-3.5 w-3.5 animate-spin text-emerald-400" />
             Pulling the waiver scan…
           </div>
@@ -72,23 +72,23 @@ export default function WaiverLineupCard({ data, delay = 0 }) {
             {targets.map(t => (
               <li key={t.name} className="rounded-lg border border-white/10 bg-white/[0.04] px-2 py-1.5">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="truncate text-[11px] font-bold text-white">
+                  <span className="truncate text-sm font-bold text-white">
                     {short(t.name)} <span className="font-normal text-white/45">({t.position})</span>
                   </span>
                   <span
-                    className={`shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em] ${
+                    className={`shrink-0 rounded-full border px-1.5 py-0.5 font-mono text-sm font-bold uppercase tracking-[0.12em] ${
                       PRIORITY_CHIP[t.priority] || PRIORITY_CHIP.low
                     }`}
                   >
                     {t.priority}
                   </span>
                 </div>
-                <p className="mt-0.5 truncate text-[10px] text-white/55">{t.why_brief}</p>
+                <p className="mt-0.5 truncate text-sm text-white/55">{t.why_brief}</p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-[11px] text-white/55">
+          <p className="text-sm text-white/55">
             No waiver scan saved yet — run one on the wire tab.
           </p>
         )}
@@ -96,11 +96,11 @@ export default function WaiverLineupCard({ data, delay = 0 }) {
         <div className="mt-2 border-t border-white/10 pt-2">
           {edge ? (
             <>
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">
+              <div className="flex items-center justify-between text-sm font-bold uppercase tracking-[0.14em] text-white/60">
                 <span>Start/sit edge</span>
                 <span className="font-mono text-sm font-bold text-emerald-300">+{edge.margin} pts</span>
               </div>
-              <p className="mt-0.5 text-[10px] text-white/55">
+              <p className="mt-0.5 text-sm text-white/55">
                 {short(edge.bench.name)} projects {edge.bench.weeklyProj} vs {short(edge.starter.name)}'s {edge.starter.weeklyProj} at{" "}
                 {edge.bench.realPosition}.
               </p>
@@ -109,7 +109,7 @@ export default function WaiverLineupCard({ data, delay = 0 }) {
               </div>
             </>
           ) : (
-            <p className="text-[10px] text-white/55">
+            <p className="text-sm text-white/55">
               No projected bench upgrade — lineup looks set.
             </p>
           )}

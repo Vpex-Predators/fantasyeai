@@ -23,19 +23,19 @@ export default function TradeRoster({ title, players, selected, onToggle, select
                 isSel ? selCls : "border-white/5 bg-white/[0.02] hover:border-white/20"
               )}
             >
-              <span className="w-8 shrink-0 font-mono text-[9px] text-white/45">{p.position}</span>
-              <span className="min-w-0 flex-1 truncate text-[11px] font-semibold text-white/85">{short(p.name)}</span>
+              <span className="w-8 shrink-0 font-mono text-sm text-white/45">{p.position}</span>
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-white/85">{short(p.name)}</span>
               {p.injuryStatus && p.injuryStatus !== "ACTIVE" && (
-                <span className="shrink-0 font-mono text-[9px] text-rose-300">{p.injuryStatus.slice(0, 3)}</span>
+                <span className="shrink-0 font-mono text-sm text-rose-300">{p.injuryStatus.slice(0, 3)}</span>
               )}
-              <span className="shrink-0 font-mono text-[10px] text-white/60">{p.weeklyProj}</span>
+              <span className="shrink-0 font-mono text-sm text-white/60">{p.weeklyProj}</span>
               {isSel && (
-                <span className={cn("shrink-0 font-mono text-[9px] font-bold", selTag)}>{selectedLabel}</span>
+                <span className={cn("shrink-0 font-mono text-sm font-bold", selTag)}>{selectedLabel}</span>
               )}
             </button>
           );
         })}
-        {!players.length && <p className="py-2 text-center font-mono text-[10px] text-white/40">No roster data.</p>}
+        {!players.length && <p className="py-2 text-center font-mono text-sm text-white/40">No roster data.</p>}
       </div>
     </HudPanel>
   );

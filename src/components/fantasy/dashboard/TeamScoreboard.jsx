@@ -23,7 +23,7 @@ export default function TeamScoreboard({ data, myScore, oppScore, anyLive, refre
         />
         <button
           onClick={() => base44.auth.logout()}
-          className="no-callout -mt-1 flex min-h-[44px] items-center gap-1 px-1 text-sm font-semibold uppercase tracking-wider text-white/50 transition-colors hover:text-rose-300"
+          className="no-callout -mt-1 flex min-h-[48px] items-center gap-1 px-1 text-sm font-semibold uppercase tracking-wider text-white/50 transition-colors hover:text-rose-300"
         >
           <LogOut className="h-3 w-3" />
           Log out
@@ -34,7 +34,7 @@ export default function TeamScoreboard({ data, myScore, oppScore, anyLive, refre
         <div className="min-w-0 flex-1 text-center">
           <p className="font-mono text-4xl font-bold leading-none text-emerald-300">{myScore.toFixed(1)}</p>
           <p className="mt-1 truncate text-xs font-semibold text-emerald-300/90">{data.myTeam.name}</p>
-          <p className="text-[10px] text-white/50">{data.myTeam.wins}-{data.myTeam.losses} record</p>
+          <p className="text-sm text-white/50">{data.myTeam.wins}-{data.myTeam.losses} record</p>
         </div>
         <span className="shrink-0 bg-gradient-to-r from-emerald-400 to-rose-400 bg-clip-text pb-1 font-heading text-xl font-bold italic tracking-widest text-transparent">
           VS
@@ -47,7 +47,7 @@ export default function TeamScoreboard({ data, myScore, oppScore, anyLive, refre
             {data.opponent ? data.opponent.name : "Bye week"}
           </p>
           {data.opponent && (
-            <p className="text-[10px] text-white/50">{data.opponent.wins}-{data.opponent.losses} record</p>
+            <p className="text-sm text-white/50">{data.opponent.wins}-{data.opponent.losses} record</p>
           )}
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function TeamScoreboard({ data, myScore, oppScore, anyLive, refre
           <DrawBar pct={100 - myPct} className="bg-rose-400" />
         </div>
       )}
-      <p className="mt-1.5 text-center text-[10px] text-white/60">
+      <p className="mt-1.5 text-center text-sm text-white/60">
         {anyLive ? "live — actual points lock in as games finish" : "projected totals"}
       </p>
     </HudPanel>

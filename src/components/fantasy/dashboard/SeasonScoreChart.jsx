@@ -55,17 +55,17 @@ export default function SeasonScoreChart({ myTeam, teams, headToHead, weeklyScor
     <section className="rounded-2xl border border-white/10 bg-white/5 p-4">
       <div className="mb-2 flex items-baseline justify-between">
         <h2 className="font-heading text-sm font-bold uppercase tracking-widest text-white/80">Season scoring</h2>
-        <span className={`text-[10px] font-bold ${wins > losses ? "text-emerald-400" : "text-white/40"}`}>
+        <span className={`text-sm font-bold ${wins > losses ? "text-emerald-400" : "text-white/40"}`}>
           {wins}-{losses} head-to-head
         </span>
       </div>
 
-      <div className="-mx-1 mb-3 flex gap-1.5 overflow-x-auto px-1 pb-1">
+      <div className="scroll-strip -mx-1 mb-3 flex gap-1.5 overflow-x-auto px-1 pb-1">
         {otherTeams.map(t => (
           <button
             key={t.id}
             onClick={() => setSelectedOpp(s => (s && s.id === t.id ? null : t))}
-            className={`whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+            className={`whitespace-nowrap rounded-full border px-2.5 py-1 text-sm transition-colors ${
               selectedOpp?.id === t.id
                 ? "border-sky-400 bg-sky-400/20 text-sky-200"
                 : "border-white/15 bg-white/5 text-white/60"
@@ -168,7 +168,7 @@ export default function SeasonScoreChart({ myTeam, teams, headToHead, weeklyScor
           <button
             key={chip.key}
             onClick={() => setVisible(v => ({ ...v, [chip.key]: !v[chip.key] }))}
-            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] transition-colors ${
+            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-sm transition-colors ${
               visible[chip.key] ? "border-white/15 bg-white/10 text-white/80" : "border-white/10 text-white/30"
             }`}
           >
@@ -181,7 +181,7 @@ export default function SeasonScoreChart({ myTeam, teams, headToHead, weeklyScor
         ))}
       </div>
 
-      <p className="mt-2 text-[10px] text-white/40">
+      <p className="mt-2 text-sm text-white/40">
         Tap a team to overlay their season — tap again to clear. Tap any week dot for that game's result.
       </p>
     </section>

@@ -18,7 +18,7 @@ export default function RefreshBar({ lastRefresh, refreshing, analyzing, pending
         onClick={onRefresh}
         disabled={busy}
         title="Refresh live scores"
-        className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all active:scale-95 ${
+        className={`flex h-12 w-12 items-center justify-center rounded-full border transition-all active:scale-95 ${
           pendingCount > 0
             ? "animate-pulse border-emerald-400/60 bg-emerald-400/15"
             : "border-white/15 bg-white/5 hover:bg-white/10"
@@ -26,11 +26,11 @@ export default function RefreshBar({ lastRefresh, refreshing, analyzing, pending
       >
         <RefreshCw className="h-5 w-5 text-emerald-300" />
       </button>
-      <span className="text-[9px] font-medium uppercase tracking-wide text-white/40">
+      <span className="text-sm font-medium uppercase tracking-wide text-white/40">
         {busy ? "Syncing…" : lastRefresh ? timeAgo(lastRefresh) : "Never"}
       </span>
       {pendingCount > 0 && !busy && (
-        <span className="rounded-full bg-emerald-400 px-1.5 text-[9px] font-bold text-slate-950">
+        <span className="rounded-full bg-emerald-400 px-1.5 text-sm font-bold text-slate-950">
           {pendingCount} new
         </span>
       )}

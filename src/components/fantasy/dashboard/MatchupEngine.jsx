@@ -43,7 +43,7 @@ function PlayerRow({ mine, theirs, label }) {
   const mineWins = both && minePts > theirsPts;
   const theirsWins = both && theirsPts > minePts;
   return (
-    <div className="flex items-center gap-1 text-[11px]">
+    <div className="flex items-center gap-1 text-sm">
       <PointsCell p={mine} className={`w-8 shrink-0 font-mono text-left ${mineWins ? "font-semibold text-emerald-300" : "text-white/60"}`} />
       <span className="flex min-w-0 flex-1 items-center gap-1">
         <span className="truncate text-white/75">{mine ? short(mine.name) : "—"}</span>
@@ -105,20 +105,20 @@ export default function MatchupEngine({ myTeam, opponent, opponentStarters, oppo
                 </p>
                 <ul className="space-y-1">
                   {(ai.reasons || []).map((r, i) => (
-                    <li key={i} className="text-[11px] text-white/60">• {r}</li>
+                    <li key={i} className="text-sm text-white/60">• {r}</li>
                   ))}
                 </ul>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <p className="mb-1 text-[10px] font-semibold uppercase text-emerald-400/80">Your levers</p>
+                    <p className="mb-1 text-sm font-semibold uppercase text-emerald-400/80">Your levers</p>
                     {(ai.user_levers || []).map((l, i) => (
-                      <p key={i} className="text-[10px] text-white/55">{l}</p>
+                      <p key={i} className="text-sm text-white/55">{l}</p>
                     ))}
                   </div>
                   <div>
-                    <p className="mb-1 text-[10px] font-semibold uppercase text-rose-400/80">Their levers</p>
+                    <p className="mb-1 text-sm font-semibold uppercase text-rose-400/80">Their levers</p>
                     {(ai.opponent_levers || []).map((l, i) => (
-                      <p key={i} className="text-[10px] text-white/55">{l}</p>
+                      <p key={i} className="text-sm text-white/55">{l}</p>
                     ))}
                   </div>
                 </div>

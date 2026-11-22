@@ -39,17 +39,17 @@ export default function LeagueRivalsCard({ data, delay = 0 }) {
                 mine ? "border-emerald-400/40 bg-emerald-400/10" : "border-white/10 bg-white/[0.04]"
               }`}
             >
-              <div className="flex items-center justify-between gap-2 text-[11px]">
+              <div className="flex items-center justify-between gap-2 text-sm">
                 <span className={`truncate font-bold ${mine ? "text-emerald-300" : "text-white"}`}>
                   {rank}. {t.name}
                 </span>
-                <span className="shrink-0 font-mono text-[10px] text-white/70">
+                <span className="shrink-0 font-mono text-sm text-white/70">
                   {t.wins}-{t.losses}
                   {t.ties ? `-${t.ties}` : ""} · {t.pointsFor} pts
                 </span>
               </div>
               <div className="mt-1 flex items-center gap-1.5">
-                <span className="w-16 shrink-0 font-mono text-[9px] uppercase tracking-wider text-white/45">{note}</span>
+                <span className="w-16 shrink-0 font-mono text-sm uppercase tracking-wider text-white/45">{note}</span>
                 <DrawBar
                   pct={((t.pointsFor || 0) / leaderPts) * 100}
                   className={mine ? "bg-emerald-400" : "bg-white/40"}
@@ -58,7 +58,7 @@ export default function LeagueRivalsCard({ data, delay = 0 }) {
             </div>
           ))}
         </div>
-        <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-[10px] text-white/55">
+        <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm text-white/55">
           <span className="min-w-0">Week {league.week} standings · full race</span>
           <OpenButton>Open standings</OpenButton>
         </div>

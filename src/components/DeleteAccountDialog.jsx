@@ -53,7 +53,7 @@ export default function DeleteAccountDialog() {
         <button
           type="button"
           aria-label="Account settings"
-          className="no-callout flex min-h-[44px] shrink-0 items-center gap-1 px-1 text-white/50 transition-colors hover:text-white"
+          className="no-callout flex min-h-[48px] shrink-0 items-center gap-1 px-1 text-white/50 transition-colors hover:text-white"
         >
           <Settings className="h-4 w-4" />
           <span className="text-sm font-bold uppercase tracking-wider">Settings</span>
@@ -72,13 +72,13 @@ export default function DeleteAccountDialog() {
           <p className="text-sm font-medium text-rose-300" role="alert">{error}</p>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleting} className="h-11 min-h-[44px] px-4 text-sm">
+          <AlertDialogCancel disabled={deleting} className="h-11 min-h-[48px] px-4 text-sm">
             Keep my account
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={deleting}
-            className="h-11 min-h-[44px] px-4 text-sm bg-rose-600 text-white hover:bg-rose-500"
+            className="h-11 min-h-[48px] px-4 text-sm bg-rose-600 text-white hover:bg-rose-500"
           >
             {deleting && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
             Delete everything

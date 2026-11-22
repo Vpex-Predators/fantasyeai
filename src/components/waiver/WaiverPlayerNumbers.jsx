@@ -25,12 +25,12 @@ export default function WaiverPlayerNumbers({ target, players = [] }) {
       <dl className="grid grid-cols-3 gap-2">
         {metrics.map(([label, value]) => (
           <div key={label}>
-            <dt className="text-[10px] text-muted-foreground">{label}</dt>
+            <dt className="text-sm text-muted-foreground">{label}</dt>
             <dd className="font-mono text-sm font-semibold tabular-nums">{value}</dd>
           </div>
         ))}
       </dl>
-      <p className="mt-1 text-[9px] text-muted-foreground">
+      <p className="mt-1 text-sm text-muted-foreground">
         {player ? "ESPN · Season total is not a remaining-season projection." : "ESPN numbers unavailable — no unique player match."}
       </p>
     </div>

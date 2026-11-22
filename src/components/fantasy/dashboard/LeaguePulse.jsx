@@ -15,7 +15,7 @@ export default function LeaguePulse({ pulse, teams, myTeam }) {
         {hasPulse ? (
           <PulseTotals totals={pulse.totals} myTeam={myTeam} />
         ) : (
-          <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-[11px] text-white/60">
+          <p className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-2 text-sm text-white/60">
             Season totals are still syncing from ESPN — the standings below are live.
           </p>
         )}

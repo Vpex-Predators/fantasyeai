@@ -20,13 +20,13 @@ export default function LeaguePulse({ data }) {
                 mine ? "bg-emerald-400/[0.08]" : ""
               }`}
             >
-              <span className={`w-5 shrink-0 text-center font-mono text-[10px] ${inField ? "text-emerald-300" : "text-white/35"}`}>
+              <span className={`w-5 shrink-0 text-center font-mono text-sm ${inField ? "text-emerald-300" : "text-white/35"}`}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span className={`min-w-0 flex-1 truncate text-[11px] font-semibold ${mine ? "text-emerald-200" : "text-white/85"}`}>
+              <span className={`min-w-0 flex-1 truncate text-sm font-semibold ${mine ? "text-emerald-200" : "text-white/85"}`}>
                 {t.name}
               </span>
-              <span className="shrink-0 font-mono text-[10px] text-white/45">
+              <span className="shrink-0 font-mono text-sm text-white/45">
                 {t.wins}-{t.losses}
               </span>
               <div className="h-1 w-12 shrink-0 bg-white/10">
@@ -37,14 +37,14 @@ export default function LeaguePulse({ data }) {
                   style={{ width: `${t.playoffPct}%` }}
                 />
               </div>
-              <span className="w-8 shrink-0 text-right font-mono text-[10px] font-bold text-white/70">
+              <span className="w-8 shrink-0 text-right font-mono text-sm font-bold text-white/70">
                 {t.playoffPct}%
               </span>
             </div>
           );
         })}
       </div>
-      <p className="mt-2 border-t border-dashed border-white/10 pt-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/35">
+      <p className="mt-2 border-t border-dashed border-white/10 pt-2 font-mono text-sm uppercase tracking-[0.15em] text-white/35">
         Top {cutoff} make the playoffs · % = simulated playoff odds
       </p>
     </HudPanel>

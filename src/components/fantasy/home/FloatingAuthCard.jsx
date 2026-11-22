@@ -25,12 +25,12 @@ export default function FloatingAuthCard() {
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-bold uppercase tracking-wider text-white">{user.full_name || "Commander"}</p>
-          <p className="truncate font-mono text-[10px] text-white/45">{user.email}</p>
+          <p className="truncate font-mono text-sm text-white/45">{user.email}</p>
         </div>
         <DeleteAccountDialog />
         <button
           onClick={() => logout()}
-          className="flex min-h-[44px] shrink-0 items-center gap-1 text-sm font-bold uppercase tracking-[0.15em] text-white/50 hover:text-white"
+          className="flex min-h-[48px] shrink-0 items-center gap-1 text-sm font-bold uppercase tracking-[0.15em] text-white/50 hover:text-white"
         >
           <LogOut className="h-4 w-4" /> Sign out
         </button>
@@ -61,7 +61,7 @@ export default function FloatingAuthCard() {
           <h1 className="font-heading text-sm font-bold uppercase tracking-[0.15em] text-white">
             FantasyEdge <span className="text-emerald-400">AI</span>
           </h1>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-white/45">
+          <p className="font-mono text-sm uppercase tracking-[0.12em] text-white/45">
             Sign in to unlock your tactical briefing
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function FloatingAuthCard() {
 
       <button
         onClick={() => base44.auth.loginWithProvider("google", returnTo)}
-        className="no-callout mt-4 flex h-11 min-h-[44px] w-full items-center justify-center gap-2 border border-white/15 bg-white/5 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/10"
+        className="no-callout mt-4 flex h-11 min-h-[48px] w-full items-center justify-center gap-2 border border-white/15 bg-white/5 text-sm font-bold uppercase tracking-wider text-white hover:bg-white/10"
       >
         <GoogleIcon className="h-4 w-4" /> Continue with Google
       </button>
@@ -79,12 +79,12 @@ export default function FloatingAuthCard() {
           <div className="w-full border-t border-dashed border-white/15" />
         </div>
         <div className="relative flex justify-center">
-          <span className="bg-slate-950 px-3 font-mono text-[9px] uppercase tracking-[0.2em] text-white/40">or</span>
+          <span className="bg-slate-950 px-3 font-mono text-sm uppercase tracking-[0.2em] text-white/40">or</span>
         </div>
       </div>
 
       {error && (
-        <div className="mb-2 border border-rose-400/30 bg-rose-400/10 p-2 font-mono text-[10px] text-rose-300">{error}</div>
+        <div className="mb-2 border border-rose-400/30 bg-rose-400/10 p-2 font-mono text-sm text-rose-300">{error}</div>
       )}
 
       <form onSubmit={handleSubmit} className="space-y-2">
@@ -100,13 +100,13 @@ export default function FloatingAuthCard() {
         />
         <button
           type="submit" disabled={loading}
-          className="no-callout flex h-11 min-h-[44px] w-full items-center justify-center gap-2 bg-emerald-400 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
+          className="no-callout flex h-11 min-h-[48px] w-full items-center justify-center gap-2 bg-emerald-400 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
         >
           {loading && <Loader2 className="h-4 w-4 animate-spin" />} Enter command center
         </button>
       </form>
 
-      <div className="mt-3 flex justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-white/45">
+      <div className="mt-3 flex justify-between font-mono text-sm uppercase tracking-[0.12em] text-white/45">
         <Link to="/register" className="hover:text-emerald-300">Create account</Link>
         <Link to="/forgot-password" className="hover:text-emerald-300">Forgot password?</Link>
       </div>

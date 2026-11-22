@@ -22,19 +22,19 @@ export default function RosterCompare({ starters, bench, pending, onSeen, onAnal
   return (
     <HudPanel label="My lineup" right={`${starterProj} START · ${benchProj} BENCH`}>
       <div className="space-y-2">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-400/80">Starters</p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-emerald-400/80">Starters</p>
         {orderedStarters.map(renderCard)}
       </div>
 
       <div className="my-3 flex items-center gap-2">
         <span className="h-px flex-1 bg-white/15" />
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-white/40">Bench</span>
+        <span className="text-sm font-semibold uppercase tracking-widest text-white/40">Bench</span>
         <span className="h-px flex-1 bg-white/15" />
       </div>
 
       <div className="space-y-2">
         {bench.map(renderCard)}
-        {bench.length === 0 && <p className="text-[11px] text-white/40">No bench players.</p>}
+        {bench.length === 0 && <p className="text-sm text-white/40">No bench players.</p>}
       </div>
     </HudPanel>
   );

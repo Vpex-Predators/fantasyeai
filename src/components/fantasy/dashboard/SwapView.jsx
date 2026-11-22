@@ -44,7 +44,7 @@ export default function SwapView({ starters = [], bench = [] }) {
   return (
     <div className="space-y-3">
       <HudPanel label="Swap check" right={`${swaps.length} UPGRADE${swaps.length === 1 ? "" : "S"}`}>
-        <p className="text-[11px] leading-relaxed text-white/70">
+        <p className="text-sm leading-relaxed text-white/70">
           ESPN week projections, starters vs bench. Tap a suggestion for the full side-by-side breakdown.
         </p>
         {swaps.length > 0 ? (
@@ -56,10 +56,10 @@ export default function SwapView({ starters = [], bench = [] }) {
                 className="block rounded-xl border border-emerald-400/40 bg-emerald-400/10 px-3 py-2 transition-colors hover:bg-emerald-400/20"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate text-[11px] font-semibold text-emerald-200">
+                  <span className="min-w-0 truncate text-sm font-semibold text-emerald-200">
                     Start {short(sw.bench.name)} over {short(sw.starter.name)}
                   </span>
-                  <span className="flex shrink-0 items-center gap-1 font-mono text-[10px] font-bold text-emerald-300">
+                  <span className="flex shrink-0 items-center gap-1 font-mono text-sm font-bold text-emerald-300">
                     <TrendingUp className="h-3 w-3" /> +{sw.margin} pts
                   </span>
                 </div>
@@ -71,7 +71,7 @@ export default function SwapView({ starters = [], bench = [] }) {
             ))}
           </div>
         ) : (
-          <p className="mt-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-[11px] leading-relaxed text-white/80">
+          <p className="mt-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm leading-relaxed text-white/80">
             No bench player projects higher than your starters at any compatible slot this week — your lineup is set as-is.
           </p>
         )}
@@ -81,7 +81,7 @@ export default function SwapView({ starters = [], bench = [] }) {
       <div className="grid grid-cols-2 gap-2">
         {[{ title: "Starters", list: starters }, { title: "Bench", list: bench }].map(col => (
           <div key={col.title} className="space-y-1.5">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70">{col.title}</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest text-white/70">{col.title}</h3>
             {col.list.map(p => {
               const sw = col.title === "Starters" ? swapByStarter[p.id] : swapByBench[p.id];
               return (
@@ -89,15 +89,15 @@ export default function SwapView({ starters = [], bench = [] }) {
                   key={p.id}
                   className={`rounded-xl border px-2.5 py-2 ${sw ? "border-emerald-400/40 bg-emerald-400/10" : "border-white/10 bg-white/[0.04]"}`}
                 >
-                  <p className="truncate text-[11px] font-semibold text-white">{short(p.name)}</p>
+                  <p className="truncate text-sm font-semibold text-white">{short(p.name)}</p>
                   <div className="mt-0.5 flex items-center justify-between gap-1">
-                    <span className="text-[9px] uppercase tracking-wider text-white/70">{label(p.realPosition || p.position)}</span>
-                    <span className="font-mono text-[10px] text-white/80">{p.weeklyProj != null ? p.weeklyProj.toFixed(1) : "—"} wk</span>
+                    <span className="text-sm uppercase tracking-wider text-white/70">{label(p.realPosition || p.position)}</span>
+                    <span className="font-mono text-sm text-white/80">{p.weeklyProj != null ? p.weeklyProj.toFixed(1) : "—"} wk</span>
                   </div>
                   <div className="mt-1 flex items-center justify-between gap-1">
                     <InjuryBadge status={p.injuryStatus} />
                     {sw && (
-                      <span className="font-mono text-[9px] font-bold text-emerald-300">
+                      <span className="font-mono text-sm font-bold text-emerald-300">
                         {col.title === "Starters" ? `bench upgrade +${sw.margin}` : `over ${short(sw.starter.name)} +${sw.margin}`}
                       </span>
                     )}

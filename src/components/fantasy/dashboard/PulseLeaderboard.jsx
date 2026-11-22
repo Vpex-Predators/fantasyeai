@@ -10,7 +10,7 @@ export default function PulseLeaderboard({ teams, myTeamId }) {
 
   return (
     <div>
-      <h3 className="mb-1.5 font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+      <h3 className="mb-1.5 font-heading text-sm font-bold uppercase tracking-[0.2em] text-white/70">
         League standings
       </h3>
       <ul className="space-y-1">
@@ -23,11 +23,11 @@ export default function PulseLeaderboard({ teams, myTeamId }) {
                 className={`absolute inset-y-0 left-0 ${mine ? "bg-emerald-400/15" : "bg-white/[0.06]"}`}
                 style={{ width: `${Math.max(6, ((t.pointsFor || 0) / maxPts) * 100)}%` }}
               />
-              <div className="relative flex items-center justify-between gap-2 text-[11px]">
+              <div className="relative flex items-center justify-between gap-2 text-sm">
                 <span className={`truncate font-semibold ${mine ? "text-emerald-300" : "text-white"}`}>
                   {i + 1}. {t.name}
                 </span>
-                <span className="shrink-0 font-mono text-[10px] text-white/70">
+                <span className="shrink-0 font-mono text-sm text-white/70">
                   {t.wins}-{t.losses}
                   {t.ties ? `-${t.ties}` : ""} · {t.pointsFor} pts
                 </span>

@@ -43,7 +43,7 @@ function ToolCallDisplay({ toolCall }) {
     <div className="mt-2 rounded-md border border-border bg-muted text-sm">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="no-callout flex min-h-[44px] w-full items-center gap-1.5 px-3 py-2 text-left text-sm font-medium text-muted-foreground"
+        className="no-callout flex min-h-[48px] w-full items-center gap-1.5 px-3 py-2 text-left text-sm font-medium text-muted-foreground"
       >
         {expanded ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
         <Wrench className="h-3.5 w-3.5" />
@@ -97,7 +97,7 @@ function AssistantContent({ content }) {
             <button
               key={m.key}
               onClick={() => setOpenSection(openSection === m.key ? null : m.key)}
-              className="no-callout flex min-h-[44px] items-center gap-1 rounded-full border border-border bg-muted px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
+              className="no-callout flex min-h-[48px] items-center gap-1 rounded-full border border-border bg-muted px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent"
             >
               {openSection === m.key ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
               {m.key === "sources" ? "Sources" : "The numbers"}

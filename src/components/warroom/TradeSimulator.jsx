@@ -116,14 +116,14 @@ export default function TradeSimulator({ data }) {
     <div className="space-y-3">
       <HudPanel label="Trade impact simulator" right={`WK ${league.week}`}>
         <div className="flex items-center gap-2">
-          <span className="shrink-0 font-mono text-[10px] uppercase tracking-[0.15em] text-white/45">PARTNER</span>
+          <span className="shrink-0 font-mono text-sm uppercase tracking-[0.15em] text-white/45">PARTNER</span>
           <Select value={partnerId} onValueChange={(id) => pickPartner(id)}>
-            <SelectTrigger className="h-11 min-h-[44px] min-w-0 flex-1 rounded-none border-white/10 bg-slate-900 font-mono text-sm text-white focus:border-emerald-400/60">
+            <SelectTrigger className="h-11 min-h-[48px] min-w-0 flex-1 rounded-none border-white/10 bg-slate-900 font-mono text-sm text-white focus:border-emerald-400/60">
               <SelectValue />
             </SelectTrigger>
             <SelectContent className="rounded-none border-white/10 bg-slate-900 text-white">
               {partnerOptions.map((t) => (
-                <SelectItem key={t.id} value={t.id} className="min-h-[44px] rounded-none py-2.5 text-sm focus:bg-white/10">
+                <SelectItem key={t.id} value={t.id} className="min-h-[48px] rounded-none py-2.5 text-sm focus:bg-white/10">
                   {t.name} ({t.wins}-{t.losses})
                 </SelectItem>
               ))}
@@ -131,7 +131,7 @@ export default function TradeSimulator({ data }) {
           </Select>
         </div>
         {partner && (
-          <p className="mt-2 border border-white/10 bg-white/[0.02] px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-white/60">
+          <p className="mt-2 border border-white/10 bg-white/[0.02] px-2.5 py-1.5 font-mono text-sm uppercase tracking-[0.1em] text-white/60">
             {myTeam.name.trim()} ⇄ {partner.name.trim()} — tap players to build the trade
           </p>
         )}
@@ -158,21 +158,21 @@ export default function TradeSimulator({ data }) {
         <button
           onClick={runSim}
           disabled={simRunning}
-          className="no-callout flex h-11 min-h-[44px] flex-1 items-center justify-center gap-1.5 bg-emerald-400 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
+          className="no-callout flex h-11 min-h-[48px] flex-1 items-center justify-center gap-1.5 bg-emerald-400 text-sm font-bold uppercase tracking-[0.18em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
         >
           {simRunning ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Crosshair className="h-3.5 w-3.5" />}
           Run simulation
         </button>
         <button
           onClick={clear}
-          className="no-callout flex h-11 min-h-[44px] shrink-0 items-center gap-1.5 border border-white/15 px-3 text-sm font-bold uppercase tracking-[0.18em] text-white/60 hover:text-white"
+          className="no-callout flex h-11 min-h-[48px] shrink-0 items-center gap-1.5 border border-white/15 px-3 text-sm font-bold uppercase tracking-[0.18em] text-white/60 hover:text-white"
         >
           <RotateCcw className="h-3.5 w-3.5" /> Clear
         </button>
       </div>
 
       {error && (
-        <p className="border border-rose-400/30 bg-rose-400/10 p-2 font-mono text-[10px] text-rose-300">{error}</p>
+        <p className="border border-rose-400/30 bg-rose-400/10 p-2 font-mono text-sm text-rose-300">{error}</p>
       )}
 
       {odds && <SimCrushReplay odds={odds} myName={myTeam.name.trim()} partnerName={partner ? partner.name.trim() : ""} />}
@@ -181,12 +181,12 @@ export default function TradeSimulator({ data }) {
         <HudPanel label="AI verdict" right="WEB + LIVE DATA">
           <div className="flex gap-2">
             <Select value={model} onValueChange={setModel} disabled={verdictRunning}>
-              <SelectTrigger className="h-11 min-h-[44px] min-w-0 flex-1 rounded-none border-white/10 bg-slate-900 font-mono text-sm text-white focus:border-emerald-400/60">
+              <SelectTrigger className="h-11 min-h-[48px] min-w-0 flex-1 rounded-none border-white/10 bg-slate-900 font-mono text-sm text-white focus:border-emerald-400/60">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="rounded-none border-white/10 bg-slate-900 text-white">
                 {AI_MODELS.map((m) => (
-                  <SelectItem key={m.id} value={m.id} className="min-h-[44px] rounded-none py-2.5 text-sm focus:bg-white/10">
+                  <SelectItem key={m.id} value={m.id} className="min-h-[48px] rounded-none py-2.5 text-sm focus:bg-white/10">
                     {m.label}
                   </SelectItem>
                 ))}
@@ -195,7 +195,7 @@ export default function TradeSimulator({ data }) {
             <button
               onClick={runVerdict}
               disabled={verdictRunning}
-              className="no-callout flex h-11 min-h-[44px] shrink-0 items-center gap-1.5 bg-emerald-400 px-4 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
+              className="no-callout flex h-11 min-h-[48px] shrink-0 items-center gap-1.5 bg-emerald-400 px-4 text-sm font-bold uppercase tracking-[0.15em] text-slate-950 hover:bg-emerald-300 disabled:opacity-50"
             >
               {verdictRunning ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Sparkles className="h-3.5 w-3.5" />}
               {verdictRunning ? "Judging…" : "Get verdict"}
@@ -204,7 +204,7 @@ export default function TradeSimulator({ data }) {
 
           {verdict && (
             <div className="mt-3 border border-white/10 bg-slate-950/60 p-3">
-              <p className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.15em]">
+              <p className="flex items-center justify-between gap-2 font-mono text-sm uppercase tracking-[0.15em]">
                 <span className={verdictTone}>● {verdictLabel}</span>
                 <span className="text-white/45">CONFIDENCE {String(verdict.confidence || "").toUpperCase()}</span>
               </p>

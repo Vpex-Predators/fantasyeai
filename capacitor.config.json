@@ -1,0 +1,15 @@
+{
+  "appId": "com.fantasyeai.app",
+  "appName": "FantasyEdge AI",
+  "webDir": "dist",
+  "backgroundColor": "#020617",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "backgroundColor": "#020617",
+      "showSpinner": false
+    }
+  }
+}

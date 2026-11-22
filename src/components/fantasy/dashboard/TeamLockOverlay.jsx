@@ -31,28 +31,28 @@ export default function TeamLockOverlay({ teams, onLocked }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/85 p-4 backdrop-blur-sm sm:items-center">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/95 p-5 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/85 px-4 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur-sm sm:items-center">
+      <div className="max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-white/10 bg-slate-900/95 p-5 shadow-2xl">
         <div className="mb-1 flex items-center gap-2 text-emerald-400">
           <Lock className="h-4 w-4" />
-          <span className="text-[11px] font-semibold uppercase tracking-widest">Pick your team</span>
+          <span className="text-sm font-semibold uppercase tracking-widest">Pick your team</span>
         </div>
         <h2 className="font-heading text-xl font-bold text-white">Which team is yours?</h2>
         <p className="mt-1 text-xs text-white/50">Pick once — it locks to your account for the season.</p>
 
-        <div className="mt-4 grid max-h-56 grid-cols-2 gap-2 overflow-y-auto pr-0.5">
+        <div className="nested-scroll mt-4 grid max-h-56 grid-cols-2 gap-2 overflow-y-auto pr-0.5">
           {(teams || []).map(t => (
             <button
               key={t.id}
               onClick={() => setTeamId(t.id)}
-              className={`rounded-xl border p-3 text-left transition-all ${
+              className={`min-h-[48px] rounded-xl border p-3 text-left transition-all ${
                 teamId === t.id
                   ? "border-emerald-400 bg-emerald-400/10 shadow-lg shadow-emerald-500/20"
                   : "border-white/10 bg-white/5 hover:border-white/25"
               }`}
             >
               <div className="truncate text-sm font-semibold text-white">{t.name}</div>
-              <div className="text-[11px] text-white/50">{t.wins}-{t.losses}</div>
+              <div className="text-sm text-white/50">{t.wins}-{t.losses}</div>
             </button>
           ))}
         </div>
@@ -80,7 +80,7 @@ export default function TeamLockOverlay({ teams, onLocked }) {
                 className="border-white/15 bg-white/5 text-white"
               />
             </div>
-            <p className="text-[11px] text-amber-300/80">
+            <p className="text-sm text-amber-300/80">
               Confirming with your ESPN email + birthday locks this pick. One pick per account — an admin can fix it later if needed.
             </p>
           </div>

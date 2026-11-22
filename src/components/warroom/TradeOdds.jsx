@@ -9,10 +9,10 @@ function Side({ name, before, after, mine, crushed }) {
   };
   return (
     <div className={`border p-2.5 transition-all duration-500 ${crushed ? "scale-y-75 opacity-40 grayscale" : "scale-100 opacity-100"} ${mine ? "border-emerald-400/30 bg-emerald-400/[0.06]" : "border-rose-400/30 bg-rose-400/[0.05]"}`}>
-      <p className={`truncate text-[11px] font-bold uppercase tracking-wider ${mine ? "text-emerald-200" : "text-rose-200"}`}>
+      <p className={`truncate text-sm font-bold uppercase tracking-wider ${mine ? "text-emerald-200" : "text-rose-200"}`}>
         {name}
       </p>
-      <div className="mt-2 space-y-1 font-mono text-[10px] text-white/55">
+      <div className="mt-2 space-y-1 font-mono text-sm text-white/55">
         <p className="flex items-center justify-between gap-1">
           PLAYOFF CHANCE
           <span className="text-white">
@@ -53,7 +53,7 @@ export default function TradeOdds({ odds, myName, partnerName, crushedSide }) {
         <Side name={myName} before={before.mine} after={after.mine} mine crushed={crushedSide === "mine"} />
         <Side name={partnerName} before={before.partner} after={after.partner} crushed={crushedSide === "partner"} />
       </div>
-      <p className="mt-2 border-t border-dashed border-white/10 pt-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/40">
+      <p className="mt-2 border-t border-dashed border-white/10 pt-2 font-mono text-sm uppercase tracking-[0.15em] text-white/40">
         This trade changes your lineup by {lineupDelta.mine >= 0 ? "+" : ""}{lineupDelta.mine} pts/wk and theirs by{" "}
         {lineupDelta.partner >= 0 ? "+" : ""}{lineupDelta.partner} pts/wk.
       </p>

@@ -19,6 +19,23 @@ export default function Analyst() {
   const [suggestions, setSuggestions] = useState([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(true);
   const bottomRef = useRef(null);
+  // Android WebView: keep the composer above the on-screen keyboard.
+  const [keyboardInset, setKeyboardInset] = useState(0);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const sync = () => {
+      const inset = Math.round(window.innerHeight - vv.height - vv.offsetTop);
+      setKeyboardInset(inset > 120 ? inset : 0);
+    };
+    vv.addEventListener("resize", sync);
+    vv.addEventListener("scroll", sync);
+    return () => {
+      vv.removeEventListener("resize", sync);
+      vv.removeEventListener("scroll", sync);
+    };
+  }, []);
 
   // Fresh, team-tailored questions (re-fetched whenever the chat is reset).
   const loadSuggestions = useCallback(async () => {
@@ -110,8 +127,8 @@ export default function Analyst() {
     thinking || (messages.length > 0 && messages[messages.length - 1].role === "user");
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <header className="sticky top-0 z-10 border-b border-border bg-card/95 backdrop-blur-xl">
+    <div className="flex min-h-screen-safe flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-10 border-b border-border bg-card/95 pt-[env(safe-area-inset-top)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-500">
             <Calculator className="h-5 w-5 text-slate-900" />
@@ -123,7 +140,7 @@ export default function Analyst() {
           <button
             onClick={handleNewChat}
             disabled={thinking}
-            className="no-callout ml-auto flex min-h-[44px] shrink-0 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
+            className="no-callout ml-auto flex min-h-[48px] shrink-0 items-center gap-1.5 rounded-md px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
           >
             <RotateCcw className="h-4 w-4" />
             New chat
@@ -145,7 +162,7 @@ export default function Analyst() {
                 <button
                   key={s}
                   onClick={() => handleSend(s)}
-                  className="no-callout min-h-[44px] w-full rounded-lg border border-border bg-card px-4 py-3 text-left text-sm text-foreground shadow-sm hover:border-ring"
+                  className="no-callout min-h-[48px] w-full rounded-lg border border-border bg-card px-4 py-3 text-left text-sm text-foreground shadow-sm hover:border-ring"
                 >
                   {s}
                 </button>
@@ -165,15 +182,16 @@ export default function Analyst() {
 
         <form
           onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+          style={keyboardInset ? { bottom: keyboardInset + 8 } : undefined}
           className="sticky bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] mt-6 flex gap-2 bg-background py-3"
         >
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="e.g. Trade my Pacheco for their Kupp?"
-            className="min-h-[44px] flex-1 rounded-lg border border-input bg-card px-4 py-3 text-base text-foreground focus:border-ring focus:outline-none"
+            className="min-h-[48px] flex-1 rounded-lg border border-input bg-card px-4 py-3 text-base text-foreground focus:border-ring focus:outline-none"
           />
-          <Button type="submit" disabled={!input.trim() || thinking} className="h-11 min-h-[44px] w-11 px-0 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button type="submit" disabled={!input.trim() || thinking} className="h-11 min-h-[48px] w-11 px-0 bg-primary text-primary-foreground hover:bg-primary/90">
             <Send className="h-4 w-4" />
           </Button>
         </form>

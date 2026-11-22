@@ -8,6 +8,9 @@ export default function TabFade({ tabKey, children }) {
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={tabKey}
+        // Reserved height keeps the page from collapsing (and the viewport
+        // jumping) when a shorter tab replaces a taller one.
+        className="min-h-[45vh]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

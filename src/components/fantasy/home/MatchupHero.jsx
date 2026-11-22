@@ -37,29 +37,29 @@ export default function MatchupHero({ data, delay = 0 }) {
               <div className="min-w-0">
                 <p className="truncate text-xs font-bold text-white">{myTeam.name}</p>
                 <p className="mt-1 font-mono text-2xl font-bold leading-none tabular-nums text-white">{myScore}</p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/50">
+                <p className="mt-1 font-mono text-sm uppercase tracking-wider text-white/50">
                   {myTeam.wins}-{myTeam.losses} record
                 </p>
               </div>
-              <p className="font-heading text-[10px] font-bold uppercase tracking-[0.2em] text-white/40">vs</p>
+              <p className="font-heading text-sm font-bold uppercase tracking-[0.2em] text-white/40">vs</p>
               <div className="min-w-0 text-right">
                 <p className="truncate text-xs font-bold text-white/85">{opponent.name}</p>
                 <p className="mt-1 font-mono text-2xl font-bold leading-none tabular-nums text-white/85">{oppScore}</p>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wider text-white/50">
+                <p className="mt-1 font-mono text-sm uppercase tracking-wider text-white/50">
                   {opponent.wins}-{opponent.losses} record
                 </p>
               </div>
             </div>
 
             <div className="mt-2 space-y-1">
-              <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">
+              <div className="flex items-center justify-between text-sm font-bold uppercase tracking-[0.14em] text-white/60">
                 <span>Win probability</span>
                 <span className={`font-mono text-sm font-bold ${wpTone}`}>{winProb == null ? "—" : `${winProb}%`}</span>
               </div>
               <DrawBar pct={winProb ?? 0} />
             </div>
 
-            <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-[10px] text-white/60">
+            <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm text-white/60">
               <span className="min-w-0 truncate">
                 Playoff odds <b className="font-mono text-white">{mine ? `${mine.playoffPct}%` : "—"}</b>
               </span>
@@ -69,10 +69,10 @@ export default function MatchupHero({ data, delay = 0 }) {
         ) : (
           <>
             <p className="text-sm font-bold text-white">BYE week — no matchup</p>
-            <p className="mt-1 text-[11px] text-white/55">
+            <p className="mt-1 text-sm text-white/55">
               Use the week to work the wire and prep your playoff run.
             </p>
-            <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-[10px] text-white/60">
+            <div className="mt-2 flex items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm text-white/60">
               <span className="min-w-0 truncate">
                 {myTeam.wins}-{myTeam.losses} record · playoff odds{" "}
                 <b className="font-mono text-white">{mine ? `${mine.playoffPct}%` : "—"}</b>

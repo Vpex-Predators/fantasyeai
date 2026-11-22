@@ -36,14 +36,14 @@ export default function StartSitAdvisor({ starters, bench }) {
 
   return (
     <div className="mt-3 border-t border-white/10 pt-3">
-      <p className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-amber-300/90">
+      <p className="mb-1.5 flex items-center gap-1.5 text-sm font-bold uppercase tracking-widest text-amber-300/90">
         <Zap className="h-3 w-3" /> Lineup calls
       </p>
       {recs.length === 0 ? (
-        <p className="text-[11px] text-white/45">Keep your bench where it is — no one projects ahead of your starters.</p>
+        <p className="text-sm text-white/45">Keep your bench where it is — no one projects ahead of your starters.</p>
       ) : (
         recs.map(r => (
-          <p key={r.bench.id} className="text-[11px] leading-relaxed text-white/70">
+          <p key={r.bench.id} className="text-sm leading-relaxed text-white/70">
             Start <span className="font-semibold text-white">{short(r.bench.name)}</span> over {short(r.over.name)} — projects{" "}
             {r.gap.toFixed(1)} more points{r.starterHurt ? ` and ${short(r.over.name)} is hurt` : ""}.
           </p>

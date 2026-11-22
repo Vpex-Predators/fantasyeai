@@ -259,23 +259,45 @@ html.light .cloud-tab--active:active {
   display: none;
 }
 
-/* Bottom-nav labels: the only sub-14px text in the app — sized so five tabs
-   fit on a 360px phone. Legibility is preserved because the whole pill is a
-   46px touch target, not a body-text tier. */
+/* Bottom-nav labels follow Material 3 bottom-navigation sizing (12sp) — the
+   one place below the 14px body floor, because five labelled tabs plus the
+   theme toggle have to fit a 320–360px phone without scrolling. Each label
+   sits inside a 48px-tall touch target. */
 .nav-label {
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   line-height: 1;
   letter-spacing: 0.01em;
 }
 
-/* Accessibility floor: no UI text below 14px anywhere in the app. */
-[class*="text-[9px]"],
-[class*="text-[10px]"],
-[class*="text-[11px]"],
-[class*="text-[12px]"],
-[class*="text-[13px]"],
-[class*="text-xs"] {
-  font-size: 0.875rem !important;
+/* Mobile form fields: 16px keeps Android Chrome and WebViews from zooming the
+   viewport when a field receives focus. Component-level size classes still win
+   over this element rule. */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+@layer utilities {
+  /* Dynamic viewport height: tracks the visible area as Android system bars and
+     the keyboard come and go, with a 100vh fallback for older WebViews. */
+  .min-h-screen-safe {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* Horizontal chip/carousel strips: keep their own scroll from chaining to
+     the page or triggering Android's edge-swipe back gesture mid-drag. */
+  .scroll-strip {
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-inline: 0.5rem;
+  }
+
+  /* Nested scroll areas never hand the gesture to the page behind them. */
+  .nested-scroll {
+    overscroll-behavior: contain;
+  }
 }
 
 /* Light mode: the tinted -200/-300 accent text built for dark glass is

@@ -11,7 +11,7 @@ Live project on org `fsztyxsnmyeqmonktvte` (us-west-1). The app still runs on Ba
 | API URL | `https://ddvdmbvwqchfhzhimovv.supabase.co` |
 | Migration | `init_fantasyeai_schema` (applied) |
 
-Org slot was freed by temporarily **pausing** `nails-by-miriam` — restore that project when Enrique no longer needs the free slot.
+**Org limit policy:** `nails-by-miriam` must remain **active** (do not pause for FantasyEAi). If another slot is needed, pause **`polishpage`** instead — or upgrade the Supabase org plan.
 
 ## Local CLI
 

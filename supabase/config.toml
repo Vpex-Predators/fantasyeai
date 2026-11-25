@@ -2,7 +2,7 @@
 # Link after project is ACTIVE: supabase link --project-ref <ref>
 # Docs: https://supabase.com/docs/guides/cli/config
 
-project_id = "fantasyeai"
+project_id = "ddvdmbvwqchfhzhimovv"
 
 [api]
 enabled = true

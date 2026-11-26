@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { AnimatePresence, MotionConfig } from 'framer-motion';
 import PageTransition from './components/PageTransition';
 import RouteFallback from './components/RouteFallback';
+import { Analytics } from '@vercel/analytics/react';
 
 // Pages are code-split so the first paint doesn't wait on every tab's chunk.
 const Home = lazy(() => import('./pages/Home'));
@@ -92,6 +93,7 @@ function App() {
             </MotionConfig>
           </Router>
           <Toaster />
+          <Analytics />
         </QueryClientProvider>
       </AuthProvider>
     </ThemeProvider>

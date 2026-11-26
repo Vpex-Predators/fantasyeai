@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ export default function TeamLockOverlay({ teams, onLocked }) {
     setSubmitting(true);
     setError(null);
     try {
-      await base44.functions.invoke("lockTeam", {
+      await invokeAppFunction("lockTeam", {
         team_id: teamId,
         espn_email: email,
         birthday

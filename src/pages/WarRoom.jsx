@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -43,7 +44,7 @@ export default function WarRoom() {
     (async () => {
       setLoading(true);
       try {
-        const res = await base44.functions.invoke("getWarRoomData", {});
+        const res = await invokeAppFunction("getWarRoomData", {});
         if (!cancelled) {
           setData(res.data);
           setError(null);

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -28,7 +29,7 @@ export default function WaiverWire() {
     if (!isAuthenticated) return;
     let cancelled = false;
     setLoading(true);
-    base44.functions.invoke("getWarRoomData", {})
+    invokeAppFunction("getWarRoomData", {})
       .then((res) => { if (!cancelled) setData(res.data); })
       .catch((err) => { if (!cancelled) setError(err.response?.data?.error || err.message); })
       .finally(() => { if (!cancelled) setLoading(false); });

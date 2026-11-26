@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { AlertTriangle, ChevronDown, ChevronUp, ExternalLink, Loader2, Newspaper, Radar, Trash2 } from "lucide-react";
 import GlossaryChip from "@/components/hud/GlossaryChip";
@@ -54,7 +55,7 @@ export default function WaiverRadar({ freeAgents, bench, starters, onScanReady }
     setScanning(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("getWaiverTargets", { force });
+      const res = await invokeAppFunction("getWaiverTargets", { force });
       setTargets(res.data.targets || []);
       setWeaknesses(res.data.weaknesses || []);
       setScannedAt(res.data.scanned_at || null);

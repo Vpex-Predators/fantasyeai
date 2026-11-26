@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { isSupabaseBackend } from "@/lib/backendMode";
+import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,7 +26,12 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await base44.auth.loginViaEmailPassword(email, password);
+      if (isSupabaseBackend() && supabase) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        if (signInError) throw signInError;
+      } else {
+        await base44.auth.loginViaEmailPassword(email, password);
+      }
       window.location.href = returnTo;
     } catch (err) {
       setError(err.message || "Invalid email or password");
@@ -34,10 +41,18 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
+    if (isSupabaseBackend()) {
+      setError("Google sign-in on the Supabase preview stack is not wired yet — use email/password.");
+      return;
+    }
     base44.auth.loginWithProvider("google", returnTo);
   };
 
   const handleApple = () => {
+    if (isSupabaseBackend()) {
+      setError("Apple sign-in on the Supabase preview stack is not wired yet — use email/password.");
+      return;
+    }
     base44.auth.loginWithProvider("apple", returnTo);
   };
 

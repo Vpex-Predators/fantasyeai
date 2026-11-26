@@ -35,3 +35,7 @@ dist-ssr
 .env
 .vite
 base44/.app.jsonc
+
+# Supabase CLI
+supabase/.temp
+supabase/.branches

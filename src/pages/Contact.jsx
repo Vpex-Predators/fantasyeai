@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import GlassBackdrop from "@/components/hud/GlassBackdrop";
@@ -25,7 +26,7 @@ export default function Contact() {
     setSending(true);
     setError(null);
     try {
-      await base44.functions.invoke("sendContactMessage", {
+      await invokeAppFunction("sendContactMessage", {
         name: name.trim(),
         email: email.trim(),
         message: message.trim(),

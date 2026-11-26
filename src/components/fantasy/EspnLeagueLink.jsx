@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { invokeAppFunction } from "@/api/appBackend";
+import { listEspnLeagues } from "@/api/entities";
 import { Loader2, Link2, ShieldCheck, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,7 @@ export default function EspnLeagueLink() {
 
   useEffect(() => {
     let active = true;
-    base44.entities.EspnLeague.list("-updated_date", 10)
+    listEspnLeagues(10)
       .then((records) => { if (active) setLinked(records); })
       .catch(() => {});
     return () => { active = false; };
@@ -27,14 +28,14 @@ export default function EspnLeagueLink() {
     setError(null);
     setSuccess(null);
     try {
-      const response = await base44.functions.invoke("linkEspnLeague", {
+      const response = await invokeAppFunction("linkEspnLeague", {
         league_id: leagueId,
       });
       const result = response.data;
       setSuccess(result);
       setShowForm(false);
       setLeagueId("");
-      const refreshed = await base44.entities.EspnLeague.list("-updated_date", 10);
+      const refreshed = await listEspnLeagues(10);
       setLinked(refreshed);
     } catch (err) {
       setError(err.response?.data?.error || err.message || "Could not link the league.");

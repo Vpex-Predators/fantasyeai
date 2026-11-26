@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Wand2 } from "lucide-react";
 import HudPanel from "@/components/hud/HudPanel";
@@ -16,7 +17,7 @@ export default function TradeSuggest({ partnerId, partnerName, model, onLoad }) 
     setRunning(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("tradeIntel", { mode: "suggest", partnerTeamId: partnerId, model });
+      const res = await invokeAppFunction("tradeIntel", { mode: "suggest", partnerTeamId: partnerId, model });
       setTrades(res.data.trades);
     } catch (err) {
       setError(err.response?.data?.error || err.message || "The analyst could not propose deals right now.");

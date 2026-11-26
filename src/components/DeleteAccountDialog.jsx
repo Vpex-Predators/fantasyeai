@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Loader2, Settings } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
@@ -29,7 +30,7 @@ export default function DeleteAccountDialog() {
     setDeleting(true);
     setError(null);
     try {
-      await base44.functions.invoke("deleteMyAccount", {});
+      await invokeAppFunction("deleteMyAccount", {});
       setOpen(false);
       logout(false); // clears the token locally without a redirect loop
       window.location.href = "/";

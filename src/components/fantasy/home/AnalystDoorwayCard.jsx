@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -15,7 +16,7 @@ export default function AnalystDoorwayCard({ delay = 0 }) {
     let cancelled = false;
     (async () => {
       try {
-        const res = await base44.functions.invoke("getAnalystSuggestions", {});
+        const res = await invokeAppFunction("getAnalystSuggestions", {});
         if (!cancelled) setQuestion((res.data && res.data.questions && res.data.questions[0]) || null);
       } catch {
         if (!cancelled) setQuestion(null);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import ReactMarkdown from "react-markdown";
 import { Loader2, Sparkles } from "lucide-react";
@@ -16,7 +17,7 @@ export default function AiAnalystPanel({ data, delay = 0 }) {
     setRunning(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("analyzeBriefing", { model });
+      const res = await invokeAppFunction("analyzeBriefing", { model });
       setBriefing(res.data);
     } catch (err) {
       setError(err.response?.data?.error || err.message || "The analyst could not run right now.");

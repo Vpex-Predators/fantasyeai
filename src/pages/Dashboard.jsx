@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { invokeAppFunction } from "@/api/appBackend";
 import { useAuth } from "@/lib/AuthContext";
 import { Loader2 } from "lucide-react";
 import AppNavBar from "@/components/AppNavBar";
@@ -38,7 +39,7 @@ export default function Dashboard() {
   });
   const hasTrackedView = useRef(false);
   const loadBoard = useCallback(async () => {
-    const res = await base44.functions.invoke("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
+    const res = await invokeAppFunction("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
     setData(res.data);
     if (res.data && !hasTrackedView.current) {
       hasTrackedView.current = true;

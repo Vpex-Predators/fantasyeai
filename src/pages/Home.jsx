@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { invokeAppFunction } from "@/api/appBackend";
 import { useAuth } from "@/lib/AuthContext";
 import { Loader2, Lock, Radar } from "lucide-react";
 import AppNavBar from "@/components/AppNavBar";
@@ -50,7 +50,7 @@ export default function Home() {
     (async () => {
       setLoading(true);
       try {
-        const res = await base44.functions.invoke("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
+        const res = await invokeAppFunction("getDashboardData", { localDate: new Date().toLocaleDateString("en-CA") });
         if (!cancelled) {
           setData(res.data);
           setError(null);

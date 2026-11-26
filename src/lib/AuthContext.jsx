@@ -1,6 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
+import { isSupabaseBackend } from '@/lib/backendMode';
+import { supabase } from '@/lib/supabaseClient';
 
 const AuthContext = createContext();
 
@@ -17,10 +19,42 @@ export const AuthProvider = ({ children }) => {
     checkAppState();
   }, []);
 
+  const loadSupabaseUser = async () => {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    if (!session?.user) {
+      setUser(null);
+      setIsAuthenticated(false);
+      setIsLoadingAuth(false);
+      setAuthChecked(true);
+      return;
+    }
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .maybeSingle();
+    setUser({
+      id: session.user.id,
+      email: session.user.email,
+      role: profile?.role || "user",
+    });
+    setIsAuthenticated(true);
+    setIsLoadingAuth(false);
+    setAuthChecked(true);
+  };
+
   const checkAppState = async () => {
     try {
       setIsLoadingPublicSettings(true);
       setAuthError(null);
+
+      if (isSupabaseBackend() && supabase) {
+        setAppPublicSettings({ id: 'supabase', public_settings: {} });
+        setIsLoadingPublicSettings(false);
+        await loadSupabaseUser();
+        return;
+      }
       
       try {
         const publicSettings = await base44.app.getPublicSettings();
@@ -79,8 +113,11 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserAuth = async () => {
     try {
-      // Now check if the user is authenticated
       setIsLoadingAuth(true);
+      if (isSupabaseBackend() && supabase) {
+        await loadSupabaseUser();
+        return;
+      }
       const currentUser = await base44.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
@@ -107,21 +144,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = (shouldRedirect = true) => {
+  const logout = async (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
+
+    if (isSupabaseBackend() && supabase) {
+      await supabase.auth.signOut();
+      if (shouldRedirect && typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      return;
+    }
     
     if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
       base44.auth.logout(window.location.href);
     } else {
-      // Just remove the token without redirect
       base44.auth.logout();
     }
   };
 
   const navigateToLogin = () => {
-    // Use the SDK's redirectToLogin method
+    if (isSupabaseBackend()) {
+      window.location.href = '/login';
+      return;
+    }
     base44.auth.redirectToLogin(window.location.href);
   };
 

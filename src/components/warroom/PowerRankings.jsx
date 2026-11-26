@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Sparkles } from "lucide-react";
 import HudPanel from "@/components/hud/HudPanel";
@@ -17,7 +18,7 @@ export default function PowerRankings({ data }) {
     setRunning(true);
     setError(null);
     try {
-      const res = await base44.functions.invoke("generatePowerRankings", { model });
+      const res = await invokeAppFunction("generatePowerRankings", { model });
       setResult(res.data);
     } catch (err) {
       setError(err.response?.data?.error || err.message || "The analyst could not run right now.");

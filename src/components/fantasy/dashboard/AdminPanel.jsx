@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ export default function AdminPanel({ isAdmin, teams }) {
   const load = async () => {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke("adminTeamLocks", { action: "list" });
+      const res = await invokeAppFunction("adminTeamLocks", { action: "list" });
       setLocks(res.data.locks || []);
     } catch {
       /* admin-only panel */
@@ -35,7 +36,7 @@ export default function AdminPanel({ isAdmin, teams }) {
   const saveLock = async lock => {
     setBusyId(lock.id);
     try {
-      await base44.functions.invoke("adminTeamLocks", {
+      await invokeAppFunction("adminTeamLocks", {
         action: "update",
         lock_id: lock.id,
         team_id: lock.team_id,
@@ -53,7 +54,7 @@ export default function AdminPanel({ isAdmin, teams }) {
     if (!window.confirm(`Unlock ${lock.email}'s team pick? They'll be able to pick again.`)) return;
     setBusyId(lock.id);
     try {
-      await base44.functions.invoke("adminTeamLocks", { action: "delete", lock_id: lock.id });
+      await invokeAppFunction("adminTeamLocks", { action: "delete", lock_id: lock.id });
       await load();
     } finally {
       setBusyId(null);

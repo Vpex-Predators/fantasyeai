@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { Loader2, Crosshair, Sparkles, RotateCcw } from "lucide-react";
 import HudPanel from "@/components/hud/HudPanel";
@@ -53,7 +54,7 @@ export default function TradeSimulator({ data }) {
   };
 
   const invokeIntel = async (mode) => {
-    const res = await base44.functions.invoke("tradeIntel", { mode, partnerTeamId: partnerId, give, get, model });
+    const res = await invokeAppFunction("tradeIntel", { mode, partnerTeamId: partnerId, give, get, model });
     return res.data;
   };
 

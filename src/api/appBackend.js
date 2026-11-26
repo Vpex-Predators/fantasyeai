@@ -6,6 +6,20 @@ const EDGE_FN_NAMES = {
   getDashboardData: "get-dashboard-data",
   lockTeam: "lock-team",
   linkEspnLeague: "link-espn-league",
+  getWarRoomData: "get-war-room-data",
+  getLiveScores: "get-live-scores",
+  getWaiverTargets: "get-waiver-targets",
+  markUpdatesSeen: "mark-updates-seen",
+  adminTeamLocks: "admin-team-locks",
+  deleteMyAccount: "delete-my-account",
+  sendContactMessage: "send-contact-message",
+  analyzeBriefing: "analyze-briefing",
+  analyzeMatchup: "analyze-matchup",
+  analyzePlayers: "analyze-players",
+  analyzeScreenshot: "analyze-screenshot",
+  generatePowerRankings: "generate-power-rankings",
+  getAnalystSuggestions: "get-analyst-suggestions",
+  tradeIntel: "trade-intel",
 };
 
 function toEdgeName(functionName) {

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
 import { Calculator, Loader2, RotateCcw, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,7 @@ export default function Analyst() {
   const loadSuggestions = useCallback(async () => {
     setLoadingSuggestions(true);
     try {
-      const res = await base44.functions.invoke("getAnalystSuggestions", {});
+      const res = await invokeAppFunction("getAnalystSuggestions", {});
       setSuggestions(res.data?.questions?.length ? res.data.questions : FALLBACK_SUGGESTIONS);
     } catch {
       setSuggestions(FALLBACK_SUGGESTIONS);

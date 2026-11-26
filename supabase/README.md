@@ -18,15 +18,38 @@ Live project on org `fsztyxsnmyeqmonktvte` (us-west-1). The app still runs on Ba
 1. [Install Supabase CLI](https://supabase.com/docs/guides/cli) and log in.
 2. `supabase link --project-ref ddvmbvwqchfhzhimovv`
 3. For new migrations: `supabase db push`
-4. Edge Function secrets (project settings → Edge Functions): `ESPN_S2`, `ESPN_SWID`, plus `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (auto-set on hosted runtime when possible; set explicitly if ESPN calls fail auth).
+4. Edge Function secrets (Dashboard → Edge Functions → Secrets):
 
-### Edge Functions (Phase 3)
+| Secret | Purpose |
+| --- | --- |
+| `ESPN_S2`, `ESPN_SWID` | **Required** for private ESPN league fetches (same cookies as Base44 runtime) |
+| `LLM_API_KEY` or `OPENAI_API_KEY` | LLM routes (`invokeLlm`); optional `LLM_BASE_URL`, `LLM_MODEL` |
+| `RESEND_API_KEY`, `CONTACT_ADMIN_EMAIL` | Contact form; optional `CONTACT_FROM_EMAIL` |
+| `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Usually auto-injected on hosted Edge; set if DB/auth helpers fail |
 
-| Slug | Base44 name | Status |
+### Edge Functions (Phase 3) — deployed on `ddvdmbvwqchfhzhimovv`
+
+| Slug | Base44 name | JWT |
 | --- | --- | --- |
-| `get-dashboard-data` | `getDashboardData` | Deployed |
-| `lock-team` | `lockTeam` | Deployed |
-| `link-espn-league` | `linkEspnLeague` | Deployed |
+| `get-dashboard-data` | `getDashboardData` | yes |
+| `lock-team` | `lockTeam` | yes |
+| `link-espn-league` | `linkEspnLeague` | yes |
+| `get-war-room-data` | `getWarRoomData` | yes |
+| `get-live-scores` | `getLiveScores` | yes |
+| `get-waiver-targets` | `getWaiverTargets` | yes |
+| `mark-updates-seen` | `markUpdatesSeen` | yes |
+| `admin-team-locks` | `adminTeamLocks` | yes |
+| `delete-my-account` | `deleteMyAccount` | yes |
+| `send-contact-message` | `sendContactMessage` | no (public) |
+| `analyze-briefing` | `analyzeBriefing` | yes |
+| `analyze-matchup` | `analyzeMatchup` | yes |
+| `analyze-players` | `analyzePlayers` | yes |
+| `analyze-screenshot` | `analyzeScreenshot` | yes |
+| `generate-power-rankings` | `generatePowerRankings` | yes |
+| `get-analyst-suggestions` | `getAnalystSuggestions` | yes |
+| `trade-intel` | `tradeIntel` | yes |
+
+Shared modules: `supabase/functions/_shared/espnLeague.js`, `auth.ts`, `playoffAndPulse.js` (bundled into deploys; MCP limit is 4 files per deploy).
 
 ## Frontend feature flag
 

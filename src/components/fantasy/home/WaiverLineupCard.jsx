@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { invokeAppFunction } from "@/api/appBackend";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
@@ -37,7 +38,7 @@ export default function WaiverLineupCard({ data, delay = 0 }) {
     let cancelled = false;
     (async () => {
       try {
-        const res = await base44.functions.invoke("getWaiverTargets", { force: false });
+        const res = await invokeAppFunction("getWaiverTargets", { force: false });
         if (!cancelled) setScan(res.data);
       } catch (err) {
         if (!cancelled) setScan(null);

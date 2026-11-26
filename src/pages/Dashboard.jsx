@@ -66,7 +66,7 @@ export default function Dashboard() {
   const analyzeOne = async player => {
     setAnalyzingPlayerId(player.id);
     try {
-      await base44.functions.invoke("analyzePlayers", {
+      await invokeAppFunction("analyzePlayers", {
         players: [{
           id: player.id,
           name: player.name,
@@ -90,7 +90,7 @@ export default function Dashboard() {
   const analyzeMatchupNow = async () => {
     setAnalyzing(true);
     try {
-      const res = await base44.functions.invoke("analyzeMatchup", {});
+      const res = await invokeAppFunction("analyzeMatchup", {});
       setMatchup(res.data);
       setError(null);
     } catch (err) {
@@ -104,7 +104,7 @@ export default function Dashboard() {
   const lightRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const res = await base44.functions.invoke("getLiveScores", { localDate: new Date().toLocaleDateString("en-CA") });
+      const res = await invokeAppFunction("getLiveScores", { localDate: new Date().toLocaleDateString("en-CA") });
       const live = res.data;
       const mine = new Map((live.mine || []).map(p => [p.id, p]));
       const opp = new Map((live.opponent || []).map(p => [p.id, p]));
@@ -144,7 +144,7 @@ export default function Dashboard() {
     const list = (Array.isArray(keys) ? keys : keys != null ? [keys] : []).map(k => String(k)).filter(Boolean);
     if (!list.length) return;
     setData(prev => (prev ? { ...prev, pending: (prev.pending || []).filter(k => !list.includes(k)) } : prev));
-    base44.functions.invoke("markUpdatesSeen", { keys: list }).catch(() => {});
+    invokeAppFunction("markUpdatesSeen", { keys: list }).catch(() => {});
   }, []);
 
   if (loading) {

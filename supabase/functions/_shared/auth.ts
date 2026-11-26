@@ -207,6 +207,73 @@ export async function invokeLlm(opts: InvokeLlmOptions): Promise<unknown> {
   return content;
 }
 
+/** Multi-turn chat (Trade Analyst and similar). */
+export async function invokeLlmChat(opts: {
+  system: string;
+  messages: Array<{ role: "user" | "assistant"; content: string }>;
+  model?: string;
+  add_context_from_internet?: boolean;
+}): Promise<string> {
+  const apiKey = Deno.env.get("LLM_API_KEY") || Deno.env.get("OPENAI_API_KEY");
+  const baseUrl = (Deno.env.get("LLM_BASE_URL") || "https://api.openai.com/v1").replace(
+    /\/$/,
+    "",
+  );
+  if (!apiKey) {
+    throw new Error(
+      "LLM_API_KEY (or OPENAI_API_KEY) is not configured on the server.",
+    );
+  }
+
+  const envModel = Deno.env.get("LLM_MODEL");
+  const requested = opts.model && opts.model !== "automatic" ? opts.model : null;
+  const model =
+    envModel ||
+    (requested ? DEFAULT_MODEL_MAP[requested] || requested : "gpt-4o-mini");
+
+  const chatMessages: Array<{ role: string; content: string }> = [
+    { role: "system", content: opts.system },
+  ];
+  for (let i = 0; i < opts.messages.length; i++) {
+    const m = opts.messages[i];
+    let content = m.content;
+    if (
+      opts.add_context_from_internet &&
+      m.role === "user" &&
+      i === opts.messages.length - 1
+    ) {
+      content +=
+        "\n\n(Use your training knowledge for recent NFL context; live web grounding is not yet wired on Supabase Edge.)";
+    }
+    chatMessages.push({ role: m.role, content });
+  }
+
+  const res = await fetch(`${baseUrl}/chat/completions`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model,
+      messages: chatMessages,
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    const msg =
+      (data as { error?: { message?: string } })?.error?.message ||
+      res.statusText;
+    throw new Error(msg || "LLM request failed");
+  }
+
+  const content = (data as { choices?: { message?: { content?: string } }[] })
+    .choices?.[0]?.message?.content;
+  if (content == null) throw new Error("Empty LLM response");
+  return content;
+}
+
 export async function sendContactEmail(opts: {
   to: string;
   subject: string;

@@ -20,6 +20,7 @@ const EDGE_FN_NAMES = {
   generatePowerRankings: "generate-power-rankings",
   getAnalystSuggestions: "get-analyst-suggestions",
   tradeIntel: "trade-intel",
+  tradeAnalystChat: "trade-analyst-chat",
 };
 
 function toEdgeName(functionName) {

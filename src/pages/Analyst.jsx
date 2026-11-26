@@ -1,6 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { invokeAppFunction } from "@/api/appBackend";
 import { base44 } from "@/api/base44Client";
+import { isSupabaseBackend } from "@/lib/backendMode";
+import {
+  clearTradeAnalystMessages,
+  loadTradeAnalystMessages,
+  saveTradeAnalystMessages,
+} from "@/lib/tradeAnalystSession";
 import { Calculator, Loader2, RotateCcw, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MessageBubble from "@/components/analyst/MessageBubble";
@@ -13,6 +19,7 @@ const FALLBACK_SUGGESTIONS = [
 ];
 
 export default function Analyst() {
+  const supabasePath = isSupabaseBackend();
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -21,7 +28,6 @@ export default function Analyst() {
   const [loadingSuggestions, setLoadingSuggestions] = useState(true);
   const bottomRef = useRef(null);
 
-  // Fresh, team-tailored questions (re-fetched whenever the chat is reset).
   const loadSuggestions = useCallback(async () => {
     setLoadingSuggestions(true);
     try {
@@ -39,6 +45,11 @@ export default function Analyst() {
   }, [loadSuggestions]);
 
   useEffect(() => {
+    if (supabasePath) {
+      setMessages(loadTradeAnalystMessages());
+      return undefined;
+    }
+
     let cancelled = false;
     (async () => {
       try {
@@ -47,68 +58,120 @@ export default function Analyst() {
           setConversation(conversations[0]);
           setMessages(conversations[0].messages || []);
         }
-      } catch { /* start a fresh conversation on first message */ }
+      } catch {
+        /* start a fresh conversation on first message */
+      }
     })();
-    return () => { cancelled = true; };
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [supabasePath]);
 
   useEffect(() => {
-    if (!conversation) return;
+    if (supabasePath || !conversation) return undefined;
     const unsubscribe = base44.agents.subscribeToConversation(conversation.id, (data) => {
       setMessages(data.messages);
     });
     return unsubscribe;
-  }, [conversation?.id]);
+  }, [conversation?.id, supabasePath]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = async (text) => {
-    const content = (text ?? input).trim();
-    if (!content || thinking) return;
-    setInput("");
+  const sendSupabase = async (content) => {
+    const userMsg = { role: "user", content };
+    const pending = [...messages, userMsg];
+    setMessages(pending);
     setThinking(true);
     try {
-      let convo = conversation;
-      if (!convo) {
-        convo = await base44.agents.createConversation({
-          agent_name: "trade_analyst",
-          metadata: { name: "Trade & Roster Analysis" },
-        });
-        setConversation(convo);
-      }
-      await base44.agents.addMessage(convo, { role: "user", content });
-      base44.analytics.track({
-        eventName: "analyst_query_sent",
-        properties: { length: content.length, content_length: content.length },
-      });
-    } catch (err) {
-      setMessages((prev) => [...prev, {
+      const res = await invokeAppFunction("tradeAnalystChat", { messages: pending });
+      const assistant = {
         role: "assistant",
-        content: `Something went wrong sending that message: ${err.message || "unknown error"}`,
-      }]);
+        content: res.data?.content || res.data?.message?.content || "No response from analyst.",
+      };
+      const full = [...pending, assistant];
+      setMessages(full);
+      saveTradeAnalystMessages(full);
+    } catch (err) {
+      const full = [
+        ...pending,
+        {
+          role: "assistant",
+          content: `Something went wrong: ${err.message || "unknown error"}`,
+        },
+      ];
+      setMessages(full);
+      saveTradeAnalystMessages(full);
     } finally {
       setThinking(false);
     }
   };
 
-  // Clear chat and re-tailor the suggested questions to the current roster.
+  const sendBase44 = async (content) => {
+    let convo = conversation;
+    if (!convo) {
+      convo = await base44.agents.createConversation({
+        agent_name: "trade_analyst",
+        metadata: { name: "Trade & Roster Analysis" },
+      });
+      setConversation(convo);
+    }
+    await base44.agents.addMessage(convo, { role: "user", content });
+    base44.analytics.track({
+      eventName: "analyst_query_sent",
+      properties: { length: content.length, content_length: content.length },
+    });
+  };
+
+  const handleSend = async (text) => {
+    const content = (text ?? input).trim();
+    if (!content || thinking) return;
+    setInput("");
+    if (supabasePath) {
+      await sendSupabase(content);
+      return;
+    }
+    setThinking(true);
+    try {
+      await sendBase44(content);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Something went wrong sending that message: ${err.message || "unknown error"}`,
+        },
+      ]);
+    } finally {
+      setThinking(false);
+    }
+  };
+
   const handleNewChat = async () => {
     if (thinking) return;
+    if (supabasePath) {
+      clearTradeAnalystMessages();
+      setMessages([]);
+      loadSuggestions();
+      return;
+    }
     try {
       const convo = await base44.agents.createConversation({
         agent_name: "trade_analyst",
         metadata: { name: "Trade & Roster Analysis" },
       });
       setConversation(convo);
-    } catch { /* next message will create a fresh conversation */ }
+    } catch {
+      /* next message will create a fresh conversation */
+    }
     setMessages([]);
     loadSuggestions();
   };
 
   const waitingForReply =
-    thinking || (messages.length > 0 && messages[messages.length - 1].role === "user");
+    thinking ||
+    (messages.length > 0 && messages[messages.length - 1].role === "user");
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -142,18 +205,22 @@ export default function Analyst() {
               </p>
               {loadingSuggestions ? (
                 <p className="text-center text-sm text-muted-foreground">Tailoring suggestions to your team…</p>
-              ) : suggestions.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => handleSend(s)}
-                  className="no-callout min-h-[44px] w-full rounded-lg border border-border bg-card px-4 py-3 text-left text-sm text-foreground shadow-sm hover:border-ring"
-                >
-                  {s}
-                </button>
-              ))}
+              ) : (
+                suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleSend(s)}
+                    className="no-callout min-h-[44px] w-full rounded-lg border border-border bg-card px-4 py-3 text-left text-sm text-foreground shadow-sm hover:border-ring"
+                  >
+                    {s}
+                  </button>
+                ))
+              )}
             </div>
           )}
-          {messages.map((m, i) => <MessageBubble key={i} message={m} />)}
+          {messages.map((m, i) => (
+            <MessageBubble key={i} message={m} />
+          ))}
           {waitingForReply && (
             <div className="flex justify-start">
               <div className="flex items-center gap-2 rounded-2xl border border-border bg-card px-4 py-2.5 text-sm text-muted-foreground">
@@ -165,7 +232,10 @@ export default function Analyst() {
         </div>
 
         <form
-          onSubmit={(e) => { e.preventDefault(); handleSend(); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSend();
+          }}
           className="sticky bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] mt-6 flex gap-2 bg-background py-3"
         >
           <input
@@ -174,7 +244,11 @@ export default function Analyst() {
             placeholder="e.g. Trade my Pacheco for their Kupp?"
             className="min-h-[44px] flex-1 rounded-lg border border-input bg-card px-4 py-3 text-base text-foreground focus:border-ring focus:outline-none"
           />
-          <Button type="submit" disabled={!input.trim() || thinking} className="h-11 min-h-[44px] w-11 px-0 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Button
+            type="submit"
+            disabled={!input.trim() || thinking}
+            className="h-11 min-h-[44px] w-11 px-0 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </form>

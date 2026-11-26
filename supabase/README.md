@@ -48,6 +48,7 @@ Live project on org `fsztyxsnmyeqmonktvte` (us-west-1). The app still runs on Ba
 | `generate-power-rankings` | `generatePowerRankings` | yes |
 | `get-analyst-suggestions` | `getAnalystSuggestions` | yes |
 | `trade-intel` | `tradeIntel` | yes |
+| `trade-analyst-chat` | `tradeAnalystChat` | yes |
 
 Shared modules: `supabase/functions/_shared/espnLeague.js`, `auth.ts`, `playoffAndPulse.js` (bundled into deploys; MCP limit is 4 files per deploy).
 
